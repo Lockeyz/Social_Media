@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        bottomNavigationView.setSelectedItemId(R.id.menu_chat);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
     }
 }
