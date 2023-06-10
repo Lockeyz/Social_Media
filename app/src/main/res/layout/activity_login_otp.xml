@@ -73,7 +73,7 @@
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/password_icon"
+        android:src="@drawable/icon_password"
         app:tint="@color/my_primary"
         android:layout_weight="20"/>
 
