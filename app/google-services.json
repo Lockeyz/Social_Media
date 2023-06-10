@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1012941992444",
+    "project_id": "social-media-lemon",
+    "storage_bucket": "social-media-lemon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012941992444:android:cba396cacf868a67180279",
+        "android_client_info": {
+          "package_name": "com.lucky.social_media_lemon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012941992444-3c3mk2pofpl5ti7pknpip8q28d5pnip9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrb9IFLrLWO60RUixBhVOwWWHpImt64ZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012941992444-3c3mk2pofpl5ti7pknpip8q28d5pnip9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
