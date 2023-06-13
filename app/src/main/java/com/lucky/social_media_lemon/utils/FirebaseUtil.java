@@ -1,9 +1,13 @@
 package com.lucky.social_media_lemon.utils;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class FirebaseUtil {
 
@@ -31,8 +35,12 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("chatrooms").document(chatRoomId);
     }
 
+    // Tạo đường dẫn đến Document cụ thể trong Collection posts
+    public static DocumentReference getPostReference(String postId){
+        return FirebaseFirestore.getInstance().collection("posts").document(postId);
+    }
     // Tham chiếu Collection posts chứa tất cả bài đăng
-    public static CollectionReference allPostCollectionReference(String chatroomId){
+    public static CollectionReference allPostCollectionReference(){
         return FirebaseFirestore.getInstance().collection("posts");
     }
 
@@ -49,6 +57,21 @@ public class FirebaseUtil {
         }
     }
 
+    public static CollectionReference allChatroomCollectionReference(){
+        return FirebaseFirestore.getInstance().collection("chatrooms");
+    }
+
+    public static DocumentReference getOtherUserFromChatroom(List<String> userIds){
+        if (userIds.get(0).equals(FirebaseUtil.currentUserId())){
+            return allUserCollectionReference().document(userIds.get(1));
+        } else {
+            return allUserCollectionReference().document(userIds.get(0));
+        }
+    }
+
+    public static String timestampToString(Timestamp timestamp){
+        return new SimpleDateFormat("HH:MM").format(timestamp.toDate());
+    }
 
 
 }

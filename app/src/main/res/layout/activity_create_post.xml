@@ -41,8 +41,8 @@
             android:id="@+id/post_btn_text_view"
             android:text="POST"
             android:textStyle="bold"
-            android:textSize="18dp"
             android:textColor="@color/white"
+            android:elevation="4dp"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             />

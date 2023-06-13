@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -91,12 +92,6 @@ public class CreatePostActivity extends AppCompatActivity {
 
     private void uploadToFirebase(String caption, Uri imageUri){
 
-        String postId = "txz12322ds";
-        String postUserId = "test";
-        String pictureUrl = "test";
-        int likeCounter = 100;
-        int commentCounter = 1000;
-
         final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
         imageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -105,8 +100,13 @@ public class CreatePostActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
 
-                        PostModel postModel = new PostModel(postId, postUserId, caption, pictureUrl, likeCounter, commentCounter);
-                        FirebaseUtil.allPostCollectionReference(postId).add(postModel);
+                        String postId = FirebaseUtil.allChatroomCollectionReference().document().getId();
+                        String postUserId = FirebaseUtil.currentUserId();
+                        Timestamp postTime = Timestamp.now();
+                        String pictureUrl = uri.toString();
+
+                        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl, 0, 0);
+                        FirebaseUtil.getPostReference(postId).set(postModel);
                         AndroidUtil.showToast(CreatePostActivity.this, "Your post was shared");
                         Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -123,7 +123,7 @@ public class CreatePostActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(CreatePostActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreatePostActivity   .this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

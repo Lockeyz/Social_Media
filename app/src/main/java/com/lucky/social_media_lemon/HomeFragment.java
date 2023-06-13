@@ -4,15 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Query;
+import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
+import com.lucky.social_media_lemon.model.PostModel;
+import com.lucky.social_media_lemon.utils.FirebaseUtil;
+
+import java.util.Arrays;
+
 public class HomeFragment extends Fragment {
 
     TextView statusTextView;
+    RecyclerView recyclerView;
+    NewsFeedRecyclerAdapter adapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -29,8 +42,46 @@ public class HomeFragment extends Fragment {
         statusTextView.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), CreatePostActivity.class));
         });
+        recyclerView = view.findViewById(R.id.recycler_view);
+        setupRecyclerView();
 
         return view;
+    }
 
+    void setupRecyclerView(){
+        Query query = FirebaseUtil.allPostCollectionReference()
+                .orderBy("postTime", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
+                .setQuery(query, PostModel.class).build();
+
+        adapter = new NewsFeedRecyclerAdapter(options, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter!=null)
+            adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter!=null)
+            adapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter!=null)
+//            adapter.startListening();
+            adapter.notifyDataSetChanged();
     }
 }

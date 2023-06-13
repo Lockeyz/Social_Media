@@ -1,9 +1,12 @@
 package com.lucky.social_media_lemon.model;
 
+import com.google.firebase.Timestamp;
+
 public class PostModel {
 
     private String postId;
     private String postUserId;
+    private Timestamp postTime;
     private String caption;
     private String pictureUrl;
     private int likeCounter;
@@ -12,9 +15,10 @@ public class PostModel {
     public PostModel() {
     }
 
-    public PostModel(String postId, String postUserId, String caption, String pictureUrl, int likeCounter, int commentCounter) {
+    public PostModel(String postId, String postUserId, Timestamp postTime, String caption, String pictureUrl, int likeCounter, int commentCounter) {
         this.postId = postId;
         this.postUserId = postUserId;
+        this.postTime = postTime;
         this.caption = caption;
         this.pictureUrl = pictureUrl;
         this.likeCounter = likeCounter;
@@ -35,6 +39,14 @@ public class PostModel {
 
     public void setPostUserId(String postUserId) {
         this.postUserId = postUserId;
+    }
+
+    public Timestamp getPostTime() {
+        return postTime;
+    }
+
+    public void setPostTime(Timestamp postTime) {
+        this.postTime = postTime;
     }
 
     public String getCaption() {
