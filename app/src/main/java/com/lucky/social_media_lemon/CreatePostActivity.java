@@ -32,6 +32,9 @@ import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CreatePostActivity extends AppCompatActivity {
 
     ImageButton backBtn;
@@ -100,12 +103,14 @@ public class CreatePostActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
 
-                        String postId = FirebaseUtil.allChatroomCollectionReference().document().getId();
+                        String postId = FirebaseUtil.allPostCollectionReference().document().getId();
                         String postUserId = FirebaseUtil.currentUserId();
                         Timestamp postTime = Timestamp.now();
                         String pictureUrl = uri.toString();
+                        List<String> likedUserIds = new ArrayList<>();
 
-                        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl, 0, 0);
+                        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
+                                0, likedUserIds, 0);
                         FirebaseUtil.getPostReference(postId).set(postModel);
                         AndroidUtil.showToast(CreatePostActivity.this, "Your post was shared");
                         Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);

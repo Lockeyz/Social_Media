@@ -88,7 +88,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/like_icon_btn"
                 android:src="@drawable/icon_like"
-                app:tint="#646464"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_margin="4dp"
                 />

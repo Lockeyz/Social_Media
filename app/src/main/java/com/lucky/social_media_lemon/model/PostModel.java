@@ -2,6 +2,8 @@ package com.lucky.social_media_lemon.model;
 
 import com.google.firebase.Timestamp;
 
+import java.util.List;
+
 public class PostModel {
 
     private String postId;
@@ -10,18 +12,21 @@ public class PostModel {
     private String caption;
     private String pictureUrl;
     private int likeCounter;
+    List<String> likedUserIds;
     private int commentCounter;
 
     public PostModel() {
     }
 
-    public PostModel(String postId, String postUserId, Timestamp postTime, String caption, String pictureUrl, int likeCounter, int commentCounter) {
+    public PostModel(String postId, String postUserId, Timestamp postTime, String caption,
+                     String pictureUrl, int likeCounter, List<String> likedUserIds ,int commentCounter) {
         this.postId = postId;
         this.postUserId = postUserId;
         this.postTime = postTime;
         this.caption = caption;
         this.pictureUrl = pictureUrl;
         this.likeCounter = likeCounter;
+        this.likedUserIds = likedUserIds;
         this.commentCounter = commentCounter;
     }
 
@@ -71,6 +76,14 @@ public class PostModel {
 
     public void setLikeCounter(int likeCounter) {
         this.likeCounter = likeCounter;
+    }
+
+    public List<String> getLikedUserIds() {
+        return likedUserIds;
+    }
+
+    public void setLikedUserIds(List<String> likedUserIds) {
+        this.likedUserIds = likedUserIds;
     }
 
     public int getCommentCounter() {
