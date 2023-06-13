@@ -38,6 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/post_btn_text_view"
             android:text="POST"
             android:textStyle="bold"
             android:textSize="18dp"
@@ -48,25 +49,44 @@
 
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/cation_edit_text"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/edit_text_rounded_corner"
-        android:hint="What's on your mind?"
-        android:padding="4dp"
-        android:textSize="24sp" />
+        android:layout_above="@+id/add_image_btn">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cation_edit_text"
-        android:src="@drawable/lemon"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/cation_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/edit_text_rounded_corner"
+                android:hint="What's on your mind?"
+                android:padding="4dp"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/picture_image_view"
+                android:layout_below="@+id/cation_edit_text"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -74,8 +94,7 @@
         android:id="@+id/add_image_btn"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="40dp"
         android:src="@drawable/icon_image"
@@ -91,5 +110,13 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="30dp"/>
+
+    <ProgressBar
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/progressBar"
+        android:indeterminateTint="@color/my_primary"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

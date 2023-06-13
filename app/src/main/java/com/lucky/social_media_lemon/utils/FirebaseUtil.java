@@ -31,6 +31,12 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("chatrooms").document(chatRoomId);
     }
 
+    // Tham chiếu Collection posts chứa tất cả bài đăng
+    public static CollectionReference allPostCollectionReference(String chatroomId){
+        return FirebaseFirestore.getInstance().collection("posts");
+    }
+
+    // Tham chiếu Collection chats chứa các đoạn chat trong phòng chat
     public static CollectionReference getChatroomMessageReference(String chatroomId){
         return getChatRoomReference(chatroomId).collection("chats");
     }
@@ -42,5 +48,7 @@ public class FirebaseUtil {
             return userId2+"_"+userId1;
         }
     }
+
+
 
 }

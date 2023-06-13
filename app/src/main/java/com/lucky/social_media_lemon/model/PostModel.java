@@ -3,6 +3,7 @@ package com.lucky.social_media_lemon.model;
 public class PostModel {
 
     private String postId;
+    private String postUserId;
     private String caption;
     private String pictureUrl;
     private int likeCounter;
@@ -11,8 +12,9 @@ public class PostModel {
     public PostModel() {
     }
 
-    public PostModel(String postId, String caption, String pictureUrl, int likeCounter, int commentCounter) {
+    public PostModel(String postId, String postUserId, String caption, String pictureUrl, int likeCounter, int commentCounter) {
         this.postId = postId;
+        this.postUserId = postUserId;
         this.caption = caption;
         this.pictureUrl = pictureUrl;
         this.likeCounter = likeCounter;
@@ -25,6 +27,14 @@ public class PostModel {
 
     public void setPostId(String postId) {
         this.postId = postId;
+    }
+
+    public String getPostUserId() {
+        return postUserId;
+    }
+
+    public void setPostUserId(String postUserId) {
+        this.postUserId = postUserId;
     }
 
     public String getCaption() {
