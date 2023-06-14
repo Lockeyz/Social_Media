@@ -1,11 +1,13 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,20 +38,24 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         Glide.with(context).load(model.getPictureUrl()).into(holder.postPicImage);
         holder.likeCounterText.setText(model.getLikeCounter()+"");
         holder.commentCounterText.setText(model.getCommentCounter()+" comments");
+        if(model.getLikedUserIds().contains(FirebaseUtil.currentUserId())){
+            holder.likeIconBtn.setImageResource(R.drawable.icon_liked);
+        }
+        else{
+            holder.likeIconBtn.setImageResource(R.drawable.icon_like);
+        }
 
-        holder.likeIconBtn.setOnClickListener(v -> {
-            holder.likeIconBtn.setEnabled(false);
+
+        holder.likeLinear.setOnClickListener(v -> {
+            holder.likeLinear.setEnabled(false);
             if (!model.getLikedUserIds().contains(FirebaseUtil.currentUserId())) {
-
                 model.setLikeCounter(model.getLikeCounter()+1);
                 FirebaseUtil.getPostReference(model.getPostId())
                         .update("likeCounter", model.getLikeCounter(),
                                 "likedUserIds", FieldValue.arrayUnion(FirebaseUtil.currentUserId()))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                holder.likeCounterText.setText(model.getLikeCounter() + "");
-                                holder.likeIconBtn.setImageResource(R.drawable.icon_liked);
-                                holder.likeIconBtn.setEnabled(true);
+                                holder.likeLinear.setEnabled(true);
                             }
                         });
             } else {
@@ -59,9 +65,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
                                 "likedUserIds", FieldValue.arrayRemove(FirebaseUtil.currentUserId()))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()){
-                                holder.likeCounterText.setText(model.getLikeCounter() + "");
-                                holder.likeIconBtn.setImageResource(R.drawable.icon_like);
-                                holder.likeIconBtn.setEnabled(true);
+                                holder.likeLinear.setEnabled(true);
                             }
                         });
             }
@@ -88,6 +92,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         TextView likeCounterText;
         TextView commentCounterText;
         ImageButton likeIconBtn;
+        LinearLayout likeLinear;
         ImageButton commentIconBtn;
         ImageButton shareIconBtn;
 
@@ -98,6 +103,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             likeCounterText = itemView.findViewById(R.id.like_counter_text_view);
             commentCounterText = itemView.findViewById(R.id.comment_counter_text_view);
             likeIconBtn = itemView.findViewById(R.id.like_icon_btn);
+            likeLinear = itemView.findViewById(R.id.like_linear);
             commentIconBtn = itemView.findViewById(R.id.comment_icon_btn);
             shareIconBtn = itemView.findViewById(R.id.share_icon_btn);
         }

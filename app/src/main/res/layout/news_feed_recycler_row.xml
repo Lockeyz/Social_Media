@@ -30,8 +30,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="4dp"
+        android:paddingTop="8dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,26 +43,25 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_color_like"
                 android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"/>
+                android:layout_marginRight="4dp"
+                android:src="@drawable/icon_color_like" />
 
             <TextView
+                android:id="@+id/like_counter_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/like_counter_text_view"
-                android:text="1000"/>
+                android:text="1000" />
 
         </LinearLayout>
 
         <TextView
+            android:id="@+id/comment_counter_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/comment_counter_text_view"
-            android:text="300 comments"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="4dp"/>
-
+            android:layout_marginEnd="4dp"
+            android:text="300 comments" />
 
 
     </RelativeLayout>
@@ -81,13 +83,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/like_linear">
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/like_icon_btn"
                 android:src="@drawable/icon_like"
+                android:id="@+id/like_icon_btn"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_margin="4dp"
                 />
