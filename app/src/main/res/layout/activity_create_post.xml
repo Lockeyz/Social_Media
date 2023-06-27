@@ -27,7 +27,7 @@
         <ImageButton
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/icon_back"
+            android:src="@drawable/back_icon"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/white"
             android:layout_marginEnd="10dp"
@@ -97,7 +97,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="40dp"
-        android:src="@drawable/icon_image"
+        android:src="@drawable/image_icon"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:tint="@color/my_primary"
         />

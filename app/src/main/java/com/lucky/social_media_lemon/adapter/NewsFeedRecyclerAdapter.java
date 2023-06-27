@@ -1,7 +1,6 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.PostModel;
@@ -39,10 +36,10 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         holder.likeCounterText.setText(model.getLikeCounter()+"");
         holder.commentCounterText.setText(model.getCommentCounter()+" comments");
         if(model.getLikedUserIds().contains(FirebaseUtil.currentUserId())){
-            holder.likeIconBtn.setImageResource(R.drawable.icon_liked);
+            holder.likeIconBtn.setImageResource(R.drawable.liked_icon);
         }
         else{
-            holder.likeIconBtn.setImageResource(R.drawable.icon_like);
+            holder.likeIconBtn.setImageResource(R.drawable.like_icon);
         }
 
 
