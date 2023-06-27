@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
 
-            <ImageButton
-                android:id="@+id/search_user_btn"
+            <ImageView
+                android:id="@+id/profile_image_view"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
@@ -28,8 +28,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"
-                android:src="@drawable/person_icon"
-                app:tint="@color/my_primary" />
+                android:src="@drawable/person_icon"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -39,7 +38,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_toRightOf="@id/search_user_btn"
+                android:layout_toRightOf="@id/profile_image_view"
                 android:background="@drawable/edit_text_rounded_corner"
                 android:elevation="4dp"
                 android:hint="What's on your mind?"
