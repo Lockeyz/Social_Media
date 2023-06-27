@@ -50,16 +50,16 @@ public class SearchUserActivity extends AppCompatActivity {
 
     void setupSearchRecyclerView(String searchTerm){
 
-//        Query query = FirebaseUtil.allUserCollectionReference()
-//                .whereGreaterThanOrEqualTo("username", searchTerm);
-//
-//        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
-//                .setQuery(query, UserModel.class).build();
-//
-//        adapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setAdapter(adapter);
-//        adapter.startListening();
+        Query query = FirebaseUtil.allUserCollectionReference()
+                .whereGreaterThanOrEqualTo("username", searchTerm);
+
+        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
+                .setQuery(query, UserModel.class).build();
+
+        adapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
     }
 
     @Override
