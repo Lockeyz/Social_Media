@@ -43,8 +43,8 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         }
 
 
-        holder.likeLinear.setOnClickListener(v -> {
-            holder.likeLinear.setEnabled(false);
+        holder.likeIconBtn.setOnClickListener(v -> {
+            holder.likeIconBtn.setEnabled(false);
             if (!model.getLikedUserIds().contains(FirebaseUtil.currentUserId())) {
                 model.setLikeCounter(model.getLikeCounter()+1);
                 FirebaseUtil.getPostReference(model.getPostId())
@@ -52,7 +52,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
                                 "likedUserIds", FieldValue.arrayUnion(FirebaseUtil.currentUserId()))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                holder.likeLinear.setEnabled(true);
+                                holder.likeIconBtn.setEnabled(true);
                             }
                         });
             } else {
@@ -62,7 +62,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
                                 "likedUserIds", FieldValue.arrayRemove(FirebaseUtil.currentUserId()))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()){
-                                holder.likeLinear.setEnabled(true);
+                                holder.likeIconBtn.setEnabled(true);
                             }
                         });
             }
@@ -100,9 +100,11 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             likeCounterText = itemView.findViewById(R.id.like_counter_text_view);
             commentCounterText = itemView.findViewById(R.id.comment_counter_text_view);
             likeIconBtn = itemView.findViewById(R.id.like_icon_btn);
-            likeLinear = itemView.findViewById(R.id.like_linear);
             commentIconBtn = itemView.findViewById(R.id.comment_icon_btn);
             shareIconBtn = itemView.findViewById(R.id.share_icon_btn);
+
         }
+
+
     }
 }

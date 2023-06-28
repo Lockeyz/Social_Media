@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,7 @@ public class HomeFragment extends Fragment {
     TextView statusTextView;
     RecyclerView recyclerView;
     NewsFeedRecyclerAdapter adapter;
-
+    LinearLayoutManager layoutManager;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -57,6 +59,7 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(getActivity(), CreatePostActivity.class));
         });
         recyclerView = view.findViewById(R.id.recycler_view);
+
         setupRecyclerView();
 
         return view;
@@ -70,18 +73,25 @@ public class HomeFragment extends Fragment {
                 .setQuery(query, PostModel.class).build();
 
         adapter = new NewsFeedRecyclerAdapter(options, getContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        layoutManager.onRestoreInstanceState(layoutManager.onSaveInstanceState());
         adapter.startListening();
+
+
+
     }
-
-
 
     @Override
     public void onStart() {
         super.onStart();
-        if (adapter!=null)
-            adapter.startListening();
+//        if (adapter!=null)
+//            adapter.startListening();
+
     }
 
     @Override
