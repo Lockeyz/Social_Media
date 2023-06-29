@@ -56,13 +56,13 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chat_recycler_view);
         imageView =findViewById(R.id.profile_pic_image_view);
 
-//        FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
-//                .addOnCompleteListener(t -> {
-//                    if (t.isSuccessful()){
-//                        Uri uri = t.getResult();
-//                        AndroidUtil.setProfilePic(this, uri, imageView);
-//                    }
-//                });
+        FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(this, uri, imageView);
+                    }
+                });
 
         backBtn.setOnClickListener(v -> {
             onBackPressed();

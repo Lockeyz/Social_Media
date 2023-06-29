@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lucky.social_media_lemon.ChatActivity;
+import com.lucky.social_media_lemon.OtherUserProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
@@ -45,11 +47,21 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                     }
                 });
 
-        holder.itemView.setOnClickListener(v -> {
+        holder.messageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             AndroidUtil.passUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OtherUserProfileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
+
+        holder.addFriendBtn.setOnClickListener(v -> {
+
         });
     }
 
@@ -65,12 +77,16 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         TextView usernameText;
         TextView phoneText;
         ImageView profilePic;
+        Button addFriendBtn;
+        Button messageBtn;
 
         public UserModelViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameText = itemView.findViewById(R.id.user_name_text);
             phoneText = itemView.findViewById(R.id.phone_text);
             profilePic = itemView.findViewById(R.id.profile_pic_image_view);
+            addFriendBtn = itemView.findViewById(R.id.add_friend_btn);
+            messageBtn = itemView.findViewById(R.id.message_btn);
         }
     }
 

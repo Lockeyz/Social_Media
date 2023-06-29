@@ -2,12 +2,15 @@ package com.lucky.social_media_lemon.model;
 
 import com.google.firebase.Timestamp;
 
+import java.util.List;
+
 public class UserModel {
 
     private String phone;
     private String username;
     private Timestamp createdTimestamp;
     private String userId;
+    private List<String> friendIds;
 
     public UserModel() {
     }
@@ -51,4 +54,11 @@ public class UserModel {
         this.userId = userId;
     }
 
+    public List<String> getFriendIds() {
+        return friendIds;
+    }
+
+    public void setFriendIds(List<String> friendIds) {
+        this.friendIds = friendIds;
+    }
 }

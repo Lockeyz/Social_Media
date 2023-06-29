@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Social_Media_Lemon"
         tools:targetApi="31">
         <activity
+            android:name=".OtherUserProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".CreatePostActivity"
             android:exported="false" />
         <activity

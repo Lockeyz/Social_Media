@@ -89,8 +89,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        if (adapter!=null)
-//            adapter.startListening();
+        if (adapter!=null)
+            adapter.startListening();
 
     }
 
