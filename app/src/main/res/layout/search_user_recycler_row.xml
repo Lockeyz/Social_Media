@@ -9,8 +9,8 @@
     android:weightSum="2">
 
     <include layout="@layout/profile_pic_view"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_margin="10dp"/>
 
