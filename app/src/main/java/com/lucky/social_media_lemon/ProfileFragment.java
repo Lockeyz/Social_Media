@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.lucky.social_media_lemon.model.UserModel;
@@ -37,7 +38,7 @@ public class ProfileFragment extends Fragment {
     TextView logoutBtn;
     UserModel currentUserModel;
     ActivityResultLauncher<Intent> imagePickLauncher;
-    Uri selectedImageUri;
+    String selectedImageUri;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -51,7 +52,7 @@ public class ProfileFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK){
                         Intent data = result.getData();
                         if (data!=null && data.getData()!=null){
-                            selectedImageUri = data.getData();
+                            selectedImageUri = data.getData().toString();
                             AndroidUtil.setProfilePic(getContext(), selectedImageUri, profilePic);
                         }
                     }
@@ -108,16 +109,23 @@ public class ProfileFragment extends Fragment {
         setInProgress(true);
 
         if (selectedImageUri!=null){
-            FirebaseUtil.getCurrentProfilePicStorageRef().putFile(selectedImageUri)
+            FirebaseUtil.getCurrentProfilePicStorageRef().putFile(Uri.parse(selectedImageUri))
                     .addOnCompleteListener(task -> {
-                        updateToFirestore();
+                        FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
+                                .addOnCompleteListener(getDownloadUrlTask -> {
+                                    if (getDownloadUrlTask.isSuccessful()){
+                                        String url = getDownloadUrlTask.getResult().toString();
+                                        currentUserModel.setAvatarUrl(url);
+                                        updateToFirestore();
+                                    }
+                                });
                     });
-        } else {
+        }
+        else{
             updateToFirestore();
         }
 
 
-        updateToFirestore();
     }
 
     void updateToFirestore(){
@@ -125,7 +133,7 @@ public class ProfileFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     setInProgress(false);
                     if (task.isSuccessful()){
-                        AndroidUtil.showToast(getContext(), "Update successfully");
+                        AndroidUtil.showToast(getContext(), "Update successfully" + currentUserModel.getAvatarUrl());
                     } else {
                         AndroidUtil.showToast(getContext(), "Update failed");
                     }
@@ -135,19 +143,12 @@ public class ProfileFragment extends Fragment {
     void getUserData(){
         setInProgress(true);
 
-        FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        Uri uri = task.getResult();
-                        AndroidUtil.setProfilePic(getContext(), uri, profilePic);
-                    }
-                });
-
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
             setInProgress(false);
             currentUserModel = task.getResult().toObject(UserModel.class);
             usernameInput.setText(currentUserModel.getUsername());
             phoneInput.setText(currentUserModel.getPhone());
+            AndroidUtil.setProfilePic(getContext(), currentUserModel.getAvatarUrl(), profilePic);
         });
     }
 
