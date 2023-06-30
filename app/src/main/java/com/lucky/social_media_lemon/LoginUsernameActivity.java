@@ -17,6 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
+import java.util.ArrayList;
+
 public class LoginUsernameActivity extends AppCompatActivity {
 
     EditText usernameInput;
@@ -48,23 +50,21 @@ public class LoginUsernameActivity extends AppCompatActivity {
             usernameInput.setError("Username length should be at least 3 chars");
             return;
         }
-        if (userModel!=null){
-            userModel.setUsername(username);
-        } else {
-            userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId());
-        }
-
-        FirebaseUtil.currentUserDetails().set(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                setInProgress(false);
-                if (task.isSuccessful()){
-                    Intent intent = new Intent(LoginUsernameActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+        if (userModel != null){
+            FirebaseUtil.currentUserDetails().update("username", username).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    setInProgress(false);
+                    if (task.isSuccessful()){
+                        Intent intent = new Intent(LoginUsernameActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId(), new ArrayList<String>(), "");
+        }
     }
 
     void getUsername(){
@@ -74,7 +74,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 setInProgress(false);
                 if (task.isSuccessful()){
-                    UserModel userModel = task.getResult().toObject(UserModel.class);
+                    userModel = task.getResult().toObject(UserModel.class);
                     if (userModel!=null){
                         usernameInput.setText(userModel.getUsername());
                     }

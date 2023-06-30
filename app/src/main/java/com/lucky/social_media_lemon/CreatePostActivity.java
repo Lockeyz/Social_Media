@@ -64,8 +64,7 @@ public class CreatePostActivity extends AppCompatActivity {
         });
 
         postBtn.setOnClickListener(v -> {
-            String caption = captionInput.getText().toString();
-            uploadToFirebase(caption, imageUri);
+            uploadToFirebase();
         });
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -90,47 +89,53 @@ public class CreatePostActivity extends AppCompatActivity {
             photoPicker.setType("image/*");
             activityResultLauncher.launch(photoPicker);
         });
-
     }
 
-    private void uploadToFirebase(String caption, Uri imageUri){
+    private void uploadPost(String pictureUrl){
+        String caption = captionInput.getText().toString();
+        String postId = FirebaseUtil.allPostCollectionReference().document().getId();
+        String postUserId = FirebaseUtil.currentUserId();
+        Timestamp postTime = Timestamp.now();
+        List<String> likedUserIds = new ArrayList<>();
 
-        final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
-        imageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
+        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
+                likedUserIds, 0);
+        FirebaseUtil.getPostReference(postId).set(postModel);
+        AndroidUtil.showToast(CreatePostActivity.this, "Your post was uploaded");
+        Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-                        String postId = FirebaseUtil.allPostCollectionReference().document().getId();
-                        String postUserId = FirebaseUtil.currentUserId();
-                        Timestamp postTime = Timestamp.now();
-                        String pictureUrl = uri.toString();
-                        List<String> likedUserIds = new ArrayList<>();
-
-                        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
-                                0, likedUserIds, 0);
-                        FirebaseUtil.getPostReference(postId).set(postModel);
-                        AndroidUtil.showToast(CreatePostActivity.this, "Your post was shared");
-                        Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(CreatePostActivity   .this, "Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void uploadToFirebase(){
+        if(imageUri == null){
+            uploadPost("");
+        }
+        else{
+            final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+            imageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            uploadPost(uri.toString());
+                        }
+                    });
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(CreatePostActivity   .this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 

@@ -11,15 +11,18 @@ public class UserModel {
     private Timestamp createdTimestamp;
     private String userId;
     private List<String> friendIds;
+    private String avatarUrl;
 
     public UserModel() {
     }
 
-    public UserModel(String phone, String username, Timestamp createdTimestamp, String userId) {
+    public UserModel(String phone, String username, Timestamp createdTimestamp, String userId, List<String> friendIds, String avatarUrl) {
         this.phone = phone;
         this.username = username;
         this.createdTimestamp = createdTimestamp;
         this.userId = userId;
+        this.friendIds = friendIds;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getPhone() {
@@ -61,4 +64,12 @@ public class UserModel {
     public void setFriendIds(List<String> friendIds) {
         this.friendIds = friendIds;
     }
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
 }

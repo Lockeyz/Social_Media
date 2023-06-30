@@ -72,6 +72,8 @@
                 android:background="@drawable/edit_text_rounded_corner"
                 android:hint="What's on your mind?"
                 android:padding="4dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey_placeholder"
                 android:textSize="24sp" />
 
             <ImageView

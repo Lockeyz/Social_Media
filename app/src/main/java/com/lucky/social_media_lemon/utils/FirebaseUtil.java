@@ -14,7 +14,6 @@ import java.util.List;
 public class FirebaseUtil {
 
     public static String currentUserId(){
-
         return FirebaseAuth.getInstance().getUid();
     }
 
@@ -44,6 +43,10 @@ public class FirebaseUtil {
     // Tham chiếu Collection posts chứa tất cả bài đăng
     public static CollectionReference allPostCollectionReference(){
         return FirebaseFirestore.getInstance().collection("posts");
+    }
+
+    public static DocumentReference getUserById(String userId){
+        return FirebaseFirestore.getInstance().collection("users").document(userId);
     }
 
     // Tham chiếu Collection chats chứa các đoạn chat trong phòng chat
@@ -83,10 +86,4 @@ public class FirebaseUtil {
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
     }
-
-    public static StorageReference getOtherProfilePicStorageRef(String otherUserId){
-        return FirebaseStorage.getInstance().getReference().child("profile_pic")
-                .child(otherUserId);
-    }
-
 }
