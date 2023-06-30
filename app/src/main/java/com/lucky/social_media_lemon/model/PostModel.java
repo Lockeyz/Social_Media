@@ -11,7 +11,6 @@ public class PostModel {
     private Timestamp postTime;
     private String caption;
     private String pictureUrl;
-    private int likeCounter;
     List<String> likedUserIds;
     private int commentCounter;
 
@@ -19,13 +18,12 @@ public class PostModel {
     }
 
     public PostModel(String postId, String postUserId, Timestamp postTime, String caption,
-                     String pictureUrl, int likeCounter, List<String> likedUserIds ,int commentCounter) {
+                     String pictureUrl, List<String> likedUserIds ,int commentCounter) {
         this.postId = postId;
         this.postUserId = postUserId;
         this.postTime = postTime;
         this.caption = caption;
         this.pictureUrl = pictureUrl;
-        this.likeCounter = likeCounter;
         this.likedUserIds = likedUserIds;
         this.commentCounter = commentCounter;
     }
@@ -68,14 +66,6 @@ public class PostModel {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    public int getLikeCounter() {
-        return likeCounter;
-    }
-
-    public void setLikeCounter(int likeCounter) {
-        this.likeCounter = likeCounter;
     }
 
     public List<String> getLikedUserIds() {

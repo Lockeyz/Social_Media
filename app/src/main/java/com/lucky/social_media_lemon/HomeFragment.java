@@ -18,10 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
 import com.lucky.social_media_lemon.model.PostModel;
+import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
@@ -34,31 +38,37 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     NewsFeedRecyclerAdapter adapter;
     LinearLayoutManager layoutManager;
+    UserModel currentUser;
+
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    void getCurrentUserDetail(){
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    currentUser = task.getResult().toObject(UserModel.class);
+                    AndroidUtil.setProfilePic(getContext(), currentUser.getAvatarUrl(), profilePic);
+                }
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getCurrentUserDetail();
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         profilePic = view.findViewById(R.id.profile_image_view);
-
-        FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        Uri uri = task.getResult();
-                        AndroidUtil.setProfilePic(getContext(), uri, profilePic);
-                    }
-                });
-
         statusTextView = view.findViewById(R.id.status_text_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
 
         statusTextView.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), CreatePostActivity.class));
         });
-        recyclerView = view.findViewById(R.id.recycler_view);
 
         setupRecyclerView();
 

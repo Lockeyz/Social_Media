@@ -58,7 +58,9 @@
             android:background="@drawable/edit_text_rounded_corner"
             android:elevation="4dp"
             android:hint="Username"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey_placeholder" />
 
         <ImageButton
             android:id="@+id/search_user_btn"
