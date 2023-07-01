@@ -74,8 +74,12 @@ public class FirebaseUtil {
         }
     }
 
-    public static String timestampToString(Timestamp timestamp){
+    public static String timestampToHourMinuteString(Timestamp timestamp){
         return new SimpleDateFormat("HH:MM").format(timestamp.toDate());
+    }
+
+    public static String timestampToFullDateAndHourString(Timestamp timestamp){
+        return new SimpleDateFormat("HH:MM, dd/MM/yyyy").format(timestamp.toDate());
     }
 
     public static void logout(){
@@ -85,5 +89,9 @@ public class FirebaseUtil {
     public static StorageReference getCurrentProfilePicStorageRef(){
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
+    }
+
+    public static CollectionReference postCommentsCollectionReference(String postId){
+        return FirebaseFirestore.getInstance().collection("posts").document(postId).collection("comments");
     }
 }

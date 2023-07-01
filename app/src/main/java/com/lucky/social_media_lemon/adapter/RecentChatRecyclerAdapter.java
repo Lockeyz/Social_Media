@@ -49,7 +49,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatRoom
                         } else {
                             holder.lastMessageText.setText(model.getLastMessage());
                         }
-                        holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
+                        holder.lastMessageTime.setText(FirebaseUtil.timestampToHourMinuteString(model.getLastMessageTimestamp()));
 
                         holder.itemView.setOnClickListener(v -> {
                             Intent intent = new Intent(context, ChatActivity.class);

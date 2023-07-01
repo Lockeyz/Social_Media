@@ -12,20 +12,18 @@ public class PostModel {
     private String caption;
     private String pictureUrl;
     List<String> likedUserIds;
-    private int commentCounter;
 
     public PostModel() {
     }
 
     public PostModel(String postId, String postUserId, Timestamp postTime, String caption,
-                     String pictureUrl, List<String> likedUserIds ,int commentCounter) {
+                     String pictureUrl, List<String> likedUserIds) {
         this.postId = postId;
         this.postUserId = postUserId;
         this.postTime = postTime;
         this.caption = caption;
         this.pictureUrl = pictureUrl;
         this.likedUserIds = likedUserIds;
-        this.commentCounter = commentCounter;
     }
 
     public String getPostId() {
@@ -74,13 +72,5 @@ public class PostModel {
 
     public void setLikedUserIds(List<String> likedUserIds) {
         this.likedUserIds = likedUserIds;
-    }
-
-    public int getCommentCounter() {
-        return commentCounter;
-    }
-
-    public void setCommentCounter(int commentCounter) {
-        this.commentCounter = commentCounter;
     }
 }
