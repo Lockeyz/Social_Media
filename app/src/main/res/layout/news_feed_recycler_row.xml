@@ -47,7 +47,6 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="0"
                 android:gravity="center_vertical"
-                android:text="TextView"
                 android:textColor="@color/black" />
 
             <TextView
@@ -56,7 +55,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:gravity="center_vertical"
-                android:text="TextView"
                 android:textColor="@color/grey_text"
                 android:textSize="10sp" />
         </LinearLayout>
@@ -68,7 +66,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:padding="4dp"
-        android:text="This is a lemon"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
@@ -78,10 +75,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/lemon" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="right|left|center_vertical"
         android:paddingLeft="4dp"
         android:paddingTop="8dp"
         android:paddingRight="4dp"
@@ -89,7 +86,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -102,22 +100,34 @@
                 android:id="@+id/like_counter_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1000"
                 android:textColor="@color/grey_placeholder" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/comment_counter_text_view"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="4dp"
-            android:text="300 comments"
-            android:textColor="@color/grey_text" />
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/comment_counter_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="0"
+                android:textColor="@color/grey_text" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="comments"
+                android:textColor="@color/grey_text" />
+        </LinearLayout>
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -138,6 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:gravity="center">
 
             <ImageButton
@@ -150,6 +161,7 @@
                 android:src="@drawable/like_icon" />
 
             <TextView
+                android:id="@+id/tv_news_feed_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -160,9 +172,11 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_news_feed_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:gravity="center">
 
             <ImageButton
@@ -171,6 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
                 android:src="@drawable/comment_icon"
                 app:tint="#646464" />
 

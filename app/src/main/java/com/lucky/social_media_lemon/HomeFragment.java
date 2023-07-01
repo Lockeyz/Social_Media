@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -85,15 +86,11 @@ public class HomeFragment extends Fragment {
         adapter = new NewsFeedRecyclerAdapter(options, getContext());
 
         layoutManager = new LinearLayoutManager(getContext());
-
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         layoutManager.onRestoreInstanceState(layoutManager.onSaveInstanceState());
         adapter.startListening();
-
-
-
     }
 
     @Override
@@ -101,21 +98,20 @@ public class HomeFragment extends Fragment {
         super.onStart();
         if (adapter!=null)
             adapter.startListening();
-
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (adapter!=null)
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter!=null){
             adapter.stopListening();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adapter!=null)
-//            adapter.startListening();
-            adapter.notifyDataSetChanged();
+        if (adapter != null){
+            adapter.notifyItemRangeChanged(0, adapter.getItemCount());
+        }
     }
 }

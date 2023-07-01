@@ -99,7 +99,7 @@ public class CreatePostActivity extends AppCompatActivity {
         List<String> likedUserIds = new ArrayList<>();
 
         PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
-                likedUserIds, 0);
+                likedUserIds);
         FirebaseUtil.getPostReference(postId).set(postModel);
         AndroidUtil.showToast(CreatePostActivity.this, "Your post was uploaded");
         Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
