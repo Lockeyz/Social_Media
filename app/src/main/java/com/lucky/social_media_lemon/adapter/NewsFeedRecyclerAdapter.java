@@ -46,7 +46,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
 
     @Override
     protected void onBindViewHolder(@NonNull PostModelViewHolder holder, int position, @NonNull PostModel model) {
-        FirebaseUtil.getUserById(model.getPostUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
