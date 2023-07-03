@@ -7,16 +7,17 @@ public class NotificationModel {
     private Timestamp notificationTime;
     private String notificationSenderId;
     private String notificationContent;
-
+    private boolean isFriend;
     public NotificationModel() {
     }
 
     public NotificationModel(String notificationId, Timestamp notificationTime,
-                             String notificationSenderId, String notificationContent) {
+                             String notificationSenderId, String notificationContent, boolean isFriend) {
         this.notificationId = notificationId;
         this.notificationTime = notificationTime;
         this.notificationSenderId = notificationSenderId;
         this.notificationContent = notificationContent;
+        this.isFriend = isFriend;
     }
 
     public String getNotificationId() {
@@ -49,5 +50,13 @@ public class NotificationModel {
 
     public void setNotificationContent(String notificationContent) {
         this.notificationContent = notificationContent;
+    }
+
+    public boolean getIsFriend() {
+        return isFriend;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
     }
 }

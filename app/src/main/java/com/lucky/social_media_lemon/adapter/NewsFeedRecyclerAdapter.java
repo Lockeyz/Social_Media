@@ -46,17 +46,14 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
 
     @Override
     protected void onBindViewHolder(@NonNull PostModelViewHolder holder, int position, @NonNull PostModel model) {
-        FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    UserModel postOwner = task.getResult().toObject(UserModel.class);
-                    holder.postOwnerUsernameText.setText(postOwner.getUsername());
-                    if(postOwner.getAvatarUrl() != null){
-                        AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.postAvatarImage);
-                    }
-
+        FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                UserModel postOwner = task.getResult().toObject(UserModel.class);
+                holder.postOwnerUsernameText.setText(postOwner.getUsername());
+                if(postOwner.getAvatarUrl() != null){
+                    AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.postAvatarImage);
                 }
+
             }
         });
 

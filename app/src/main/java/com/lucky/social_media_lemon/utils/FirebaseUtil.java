@@ -101,4 +101,8 @@ public class FirebaseUtil {
     public static CollectionReference allNotificationCollectionReference(){
         return FirebaseFirestore.getInstance().collection("notifications");
     }
+
+    public static DocumentReference getNotificationReference(String notificationId){
+        return FirebaseFirestore.getInstance().collection("notifications").document(notificationId);
+    }
 }

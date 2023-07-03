@@ -29,11 +29,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="User name"
+                android:text="Content"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_margin="8dp"
-                android:id="@+id/user_name_text"/>
+                android:id="@+id/notification_content_text"/>
 
         </LinearLayout>
 
@@ -47,22 +47,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/add_friend_btn"
+                android:id="@+id/confirm_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Accept"
+                android:text="Confirm"
                 android:textSize="10sp"
                 android:textColor="@color/white"
                 android:layout_margin="4sp"
                 android:backgroundTint="@color/my_primary"/>
 
             <Button
-                android:id="@+id/message_btn"
+                android:id="@+id/delete_request_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Decline"
+                android:text="Delete request"
                 android:textSize="10sp"
                 android:textColor="@color/white"
                 android:layout_margin="4sp"
