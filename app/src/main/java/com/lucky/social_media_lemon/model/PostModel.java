@@ -11,7 +11,7 @@ public class PostModel {
     private Timestamp postTime;
     private String caption;
     private String pictureUrl;
-    List<String> likedUserIds;
+    private List<String> likedUserIds;
 
     public PostModel() {
     }

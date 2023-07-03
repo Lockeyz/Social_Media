@@ -28,6 +28,10 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("users").document(currentUserId());
     }
 
+    public static DocumentReference getUserDetailsById(String userId){
+        return FirebaseFirestore.getInstance().collection("users").document(userId);
+    }
+
     public static CollectionReference allUserCollectionReference(){
         return FirebaseFirestore.getInstance().collection("users");
     }
@@ -45,9 +49,7 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("posts");
     }
 
-    public static DocumentReference getUserById(String userId){
-        return FirebaseFirestore.getInstance().collection("users").document(userId);
-    }
+
 
     // Tham chiếu Collection chats chứa các đoạn chat trong phòng chat
     public static CollectionReference getChatroomMessageReference(String chatroomId){
@@ -93,5 +95,10 @@ public class FirebaseUtil {
 
     public static CollectionReference postCommentsCollectionReference(String postId){
         return FirebaseFirestore.getInstance().collection("posts").document(postId).collection("comments");
+    }
+
+    // Tham chiếu Collection notification
+    public static CollectionReference allNotificationCollectionReference(){
+        return FirebaseFirestore.getInstance().collection("notifications");
     }
 }

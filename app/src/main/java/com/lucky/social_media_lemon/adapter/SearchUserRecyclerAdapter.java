@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
 import com.lucky.social_media_lemon.ChatActivity;
+import com.lucky.social_media_lemon.NotificationFragment;
 import com.lucky.social_media_lemon.OtherUserProfileActivity;
 import com.lucky.social_media_lemon.R;
+import com.lucky.social_media_lemon.model.NotificationModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
@@ -57,7 +60,14 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         });
 
         holder.addFriendBtn.setOnClickListener(v -> {
-
+            Intent intent = new Intent(context, NotificationFragment.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            String notificationId = FirebaseUtil.allNotificationCollectionReference().document().getId();
+            Timestamp notificationTime = Timestamp.now();
+            String notificationSender = "test";
+            String notificationContent = "test";
+            NotificationModel notificationModel = new NotificationModel(notificationId, notificationTime,
+                    notificationSender, notificationContent);
         });
     }
 

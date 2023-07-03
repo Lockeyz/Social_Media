@@ -31,16 +31,16 @@ public class CommentRecyclerAdapter extends FirestoreRecyclerAdapter<CommentMode
     }
 
     class CommentRowViewHolder extends RecyclerView.ViewHolder{
-        ImageView ivCommentAvatar;
-        TextView tvCommentUsername;
-        TextView tvCommentContent;
-        TextView tvCommentTime;
+        ImageView commentAvatarIv;
+        TextView commentUsernameIv;
+        TextView commentContentIv;
+        TextView commentTimeIv;
 
         public void getViews(View itemView){
-            ivCommentAvatar = itemView.findViewById(R.id.iv_comment_avatar);
-            tvCommentUsername = itemView.findViewById(R.id.tv_comment_username);
-            tvCommentContent = itemView.findViewById(R.id.tv_comment_content);
-            tvCommentTime = itemView.findViewById(R.id.tv_comment_time);
+            commentAvatarIv = itemView.findViewById(R.id.iv_comment_avatar);
+            commentUsernameIv = itemView.findViewById(R.id.tv_comment_username);
+            commentContentIv = itemView.findViewById(R.id.tv_comment_content);
+            commentTimeIv = itemView.findViewById(R.id.tv_comment_time);
         }
 
         public CommentRowViewHolder(@NonNull View itemView) {
@@ -51,22 +51,19 @@ public class CommentRecyclerAdapter extends FirestoreRecyclerAdapter<CommentMode
 
     @Override
     protected void onBindViewHolder(@NonNull CommentRowViewHolder holder, int position, @NonNull CommentModel model) {
-        FirebaseUtil.getUserById(model.getCommentUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    UserModel postOwner = task.getResult().toObject(UserModel.class);
-                    holder.tvCommentUsername.setText(postOwner.getUsername());
-                    if(postOwner.getAvatarUrl() != null){
-                        AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.ivCommentAvatar);
-                    }
-
+        FirebaseUtil.getUserDetailsById(model.getCommentUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                UserModel postOwner = task.getResult().toObject(UserModel.class);
+                holder.commentUsernameIv.setText(postOwner.getUsername());
+                if(postOwner.getAvatarUrl() != null){
+                    AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.commentAvatarIv);
                 }
+
             }
         });
 
-        holder.tvCommentContent.setText(model.getComment());
-        holder.tvCommentTime.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getCommentTime()));
+        holder.commentContentIv.setText(model.getComment());
+        holder.commentTimeIv.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getCommentTime()));
     }
 
 

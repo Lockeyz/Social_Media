@@ -133,7 +133,7 @@ public class ProfileFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     setInProgress(false);
                     if (task.isSuccessful()){
-                        AndroidUtil.showToast(getContext(), "Update successfully" + currentUserModel.getAvatarUrl());
+                        AndroidUtil.showToast(getContext(), "Update successfully");
                     } else {
                         AndroidUtil.showToast(getContext(), "Update failed");
                     }
