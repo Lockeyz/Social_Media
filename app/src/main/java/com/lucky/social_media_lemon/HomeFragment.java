@@ -45,27 +45,35 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    void getCurrentUserDetail(){
-        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    currentUser = task.getResult().toObject(UserModel.class);
-                    AndroidUtil.setProfilePic(getContext(), currentUser.getAvatarUrl(), profilePic);
-                }
-            }
-        });
-    }
+//    void getCurrentUserDetail(){
+//        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()){
+//                    currentUser = task.getResult().toObject(UserModel.class);
+////                    AndroidUtil.setProfilePic(getContext(), currentUser.getAvatarUrl(), profilePic);
+//                }
+//            }
+//        });
+//    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getCurrentUserDetail();
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         profilePic = view.findViewById(R.id.profile_image_view);
         statusTextView = view.findViewById(R.id.status_text_view);
         recyclerView = view.findViewById(R.id.recycler_view);
+
+        FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(getContext(), uri, profilePic);
+                    }
+                });
 
         statusTextView.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), CreatePostActivity.class));

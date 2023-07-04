@@ -16,13 +16,12 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String phone, String username, Timestamp createdTimestamp, String userId, List<String> friendIds, String avatarUrl) {
+    public UserModel(String phone, String username, Timestamp createdTimestamp, String userId, List<String> friendIds) {
         this.phone = phone;
         this.username = username;
         this.createdTimestamp = createdTimestamp;
         this.userId = userId;
         this.friendIds = friendIds;
-        this.avatarUrl = avatarUrl;
     }
 
     public String getPhone() {

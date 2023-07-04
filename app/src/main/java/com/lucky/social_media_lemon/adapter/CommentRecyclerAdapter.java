@@ -1,6 +1,7 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,41 @@ public class CommentRecyclerAdapter extends FirestoreRecyclerAdapter<CommentMode
         this.context = context;
     }
 
+
+
+    @Override
+    protected void onBindViewHolder(@NonNull CommentRowViewHolder holder, int position, @NonNull CommentModel model) {
+
+
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getCommentUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.commentAvatarIv);
+                    }
+                });
+
+
+        FirebaseUtil.getUserDetailsById(model.getCommentUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                UserModel commentOwner = task.getResult().toObject(UserModel.class);
+                holder.commentUsernameIv.setText(commentOwner.getUsername());
+
+            }
+        });
+
+        holder.commentContentIv.setText(model.getComment());
+        holder.commentTimeIv.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getCommentTime()));
+    }
+
+
+    @NonNull
+    @Override
+    public CommentRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.comment_recycler_row , parent, false);
+        return new CommentRowViewHolder(view);
+    }
+
     class CommentRowViewHolder extends RecyclerView.ViewHolder{
         ImageView commentAvatarIv;
         TextView commentUsernameIv;
@@ -47,31 +83,6 @@ public class CommentRecyclerAdapter extends FirestoreRecyclerAdapter<CommentMode
             super(itemView);
             getViews(itemView);
         }
-    }
-
-    @Override
-    protected void onBindViewHolder(@NonNull CommentRowViewHolder holder, int position, @NonNull CommentModel model) {
-        FirebaseUtil.getUserDetailsById(model.getCommentUserId()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                UserModel postOwner = task.getResult().toObject(UserModel.class);
-                holder.commentUsernameIv.setText(postOwner.getUsername());
-                if(postOwner.getAvatarUrl() != null){
-                    AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.commentAvatarIv);
-                }
-
-            }
-        });
-
-        holder.commentContentIv.setText(model.getComment());
-        holder.commentTimeIv.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getCommentTime()));
-    }
-
-
-    @NonNull
-    @Override
-    public CommentRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.comment_recycler_row , parent, false);
-        return new CommentRowViewHolder(view);
     }
 }
 

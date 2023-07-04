@@ -31,7 +31,7 @@ public class AndroidUtil {
         return userModel;
     }
 
-    public static void setProfilePic(Context context, String imageUrl, ImageView imageView){
+    public static void setProfilePic(Context context, Uri imageUrl, ImageView imageView){
         Glide.with(context).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(imageView);
     }
 }

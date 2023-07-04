@@ -92,6 +92,11 @@ public class FirebaseUtil {
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
     }
+    public static StorageReference getOtherProfilePicStorageRef(String otherUserId){
+        return FirebaseStorage.getInstance().getReference().child("profile_pic")
+                .child(otherUserId);
+    }
+
 
     public static CollectionReference postCommentsCollectionReference(String postId){
         return FirebaseFirestore.getInstance().collection("posts").document(postId).collection("comments");

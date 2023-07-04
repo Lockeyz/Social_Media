@@ -18,6 +18,7 @@ import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LoginUsernameActivity extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
     ProgressBar progressBar;
     String phoneNumber;
     UserModel userModel;
+    List<String> friendIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +52,23 @@ public class LoginUsernameActivity extends AppCompatActivity {
             usernameInput.setError("Username length should be at least 3 chars");
             return;
         }
-        if (userModel != null){
-            FirebaseUtil.currentUserDetails().update("username", username).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    setInProgress(false);
-                    if (task.isSuccessful()){
-                        Intent intent = new Intent(LoginUsernameActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    }
-                }
-            });
+        if (userModel!=null){
+            userModel.setUsername(username);
         } else {
-            userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId(), new ArrayList<String>(), "");
+            userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId(), friendIds);
         }
+
+        FirebaseUtil.currentUserDetails().set(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                setInProgress(false);
+                if (task.isSuccessful()){
+                    Intent intent = new Intent(LoginUsernameActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     void getUsername(){

@@ -46,16 +46,14 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
 
     @Override
     protected void onBindViewHolder(@NonNull PostModelViewHolder holder, int position, @NonNull PostModel model) {
-        FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                UserModel postOwner = task.getResult().toObject(UserModel.class);
-                holder.postOwnerUsernameText.setText(postOwner.getUsername());
-                if(postOwner.getAvatarUrl() != null){
-                    AndroidUtil.setProfilePic(context, postOwner.getAvatarUrl(), holder.postAvatarImage);
-                }
 
-            }
-        });
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getPostUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.postAvatarImage);
+                    }
+                });
 
         FirebaseUtil.postCommentsCollectionReference(model.getPostId()).count().get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
             @Override
@@ -142,8 +140,8 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             likeText = itemView.findViewById(R.id.tv_news_feed_like);
             commentLinear = itemView.findViewById(R.id.ll_news_feed_comment);
             shareIconBtn = itemView.findViewById(R.id.share_icon_btn);
-            postAvatarImage = itemView.findViewById(R.id.iv_post_avatar);
-            postOwnerUsernameText = itemView.findViewById(R.id.tv_post_owner_username);
+            postAvatarImage = itemView.findViewById(R.id.post_avatar_image_view);
+            postOwnerUsernameText = itemView.findViewById(R.id.post_username_text_view);
             postedTimeText = itemView.findViewById(R.id.tv_posted_time);
         }
     }
