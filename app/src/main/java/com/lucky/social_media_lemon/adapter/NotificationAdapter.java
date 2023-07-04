@@ -17,8 +17,6 @@ import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.NotificationModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
-import org.w3c.dom.Text;
-
 public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationModel, NotificationAdapter.NotificationModelViewHolder> {
 
     Context context;
@@ -41,7 +39,7 @@ public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationMo
     @NonNull
     @Override
     public NotificationModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.notification_recycler_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.friend_recycler_row, parent, false);
         return new NotificationModelViewHolder(view);
     }
 
@@ -55,10 +53,10 @@ public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationMo
         public NotificationModelViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            notificationPic = itemView.findViewById(R.id.profile_pic_image_view);
-            contentText = itemView.findViewById(R.id.notification_content_text);
-            confirmButton = itemView.findViewById(R.id.confirm_btn);
-            deleteRequestButton = itemView.findViewById(R.id.delete_request_btn);
+//            notificationPic = itemView.findViewById(R.id.profile_pic_image_view);
+//            contentText = itemView.findViewById(R.id.notification_content_text);
+//            confirmButton = itemView.findViewById(R.id.confirm_btn);
+//            deleteRequestButton = itemView.findViewById(R.id.delete_request_btn);
         }
     }
 }

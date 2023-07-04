@@ -21,6 +21,7 @@ import com.lucky.social_media_lemon.NotificationFragment;
 import com.lucky.social_media_lemon.OtherUserProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.ChatRoomModel;
+import com.lucky.social_media_lemon.model.FriendModel;
 import com.lucky.social_media_lemon.model.NotificationModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
@@ -39,13 +40,14 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
     @Override
     protected void onBindViewHolder(@NonNull UserModelViewHolder holder, int position, @NonNull UserModel model) {
-        String avatarUrl = model.getAvatarUrl();
+
         holder.usernameText.setText(model.getUsername());
         holder.phoneText.setText(model.getPhone());
         if (model.getUserId().equals(FirebaseUtil.currentUserId())){
             holder.usernameText.setText(model.getUsername() + " (Me)");
         }
 
+        // set avatar
         FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful()){
@@ -69,24 +71,44 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
         holder.addFriendBtn.setOnClickListener(v -> {
 
-            String notificationId = FirebaseUtil.allNotificationCollectionReference().document().getId();
-            Timestamp notificationTime = Timestamp.now();
-            String notificationSenderId = FirebaseUtil.currentUserId();
+//            String notificationId = FirebaseUtil.allNotificationCollectionReference().document().getId();
+//            Timestamp notificationTime = Timestamp.now();
+//            String notificationSenderId = FirebaseUtil.currentUserId();
+//
+//            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+//                if (task.isSuccessful()){
+//
+//                    String usernameSender = task.getResult().toObject(UserModel.class).getUsername();
+//                    String notificationContent = usernameSender + " sent a friend request.";
+//                    NotificationModel notificationModel = new NotificationModel(notificationId, notificationTime,
+//                            notificationSenderId, notificationContent, true);
+//
+//                    FirebaseUtil.getNotificationReference(notificationId).set(notificationModel);
+//
+//                }
+//            });
 
-            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+            String requestId = FirebaseUtil.getChatroomId(FirebaseUtil.currentUserId(), model.getUserId());
+
+            FirebaseUtil.getChatroomReference(requestId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
-
-                    String usernameSender = task.getResult().toObject(UserModel.class).getUsername();
-                    String notificationContent = usernameSender + " sent a friend request.";
-                    NotificationModel notificationModel = new NotificationModel(notificationId, notificationTime,
-                            notificationSenderId, notificationContent, true);
-
-                    FirebaseUtil.getNotificationReference(notificationId).set(notificationModel);
-
+                    FriendModel friendModel = task.getResult().toObject(FriendModel.class);
+                    if (friendModel==null){
+                        // first time chat
+//                        friendModel = new ChatRoomModel(
+//                                requestId,
+//                                Arrays.asList(FirebaseUtil.currentUserId(), model.getUserId()),
+//                                Timestamp.now(),
+//                                ""
+//                        );
+                        FirebaseUtil.getChatroomReference(requestId).set(friendModel);
+                    }
                 }
             });
 
         });
+
+
     }
 
     @NonNull

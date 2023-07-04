@@ -110,4 +110,12 @@ public class FirebaseUtil {
     public static DocumentReference getNotificationReference(String notificationId){
         return FirebaseFirestore.getInstance().collection("notifications").document(notificationId);
     }
+
+    public static CollectionReference allFriendCollectionReference(){
+        return FirebaseFirestore.getInstance().collection("friends");
+    }
+
+    public static DocumentReference getFriendReference(String notificationId){
+        return FirebaseFirestore.getInstance().collection("notifications").document(notificationId);
+    }
 }

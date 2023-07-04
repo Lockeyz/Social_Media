@@ -9,6 +9,11 @@
         android:icon="@drawable/notification_icon"
         android:id="@+id/menu_notifications"/>
 
+    <item android:title="Friends"
+        android:icon="@drawable/friend_icon"
+        android:id="@+id/menu_friends"/>
+
+
     <item android:title="Profile"
         android:icon="@drawable/person_icon"
         android:id="@+id/menu_profile"/>
