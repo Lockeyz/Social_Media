@@ -90,18 +90,20 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
             String requestId = FirebaseUtil.getChatroomId(FirebaseUtil.currentUserId(), model.getUserId());
 
-            FirebaseUtil.getChatroomReference(requestId).get().addOnCompleteListener(task -> {
+            FirebaseUtil.getFriendReference(requestId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     FriendModel friendModel = task.getResult().toObject(FriendModel.class);
                     if (friendModel==null){
-                        // first time chat
-//                        friendModel = new ChatRoomModel(
-//                                requestId,
-//                                Arrays.asList(FirebaseUtil.currentUserId(), model.getUserId()),
-//                                Timestamp.now(),
-//                                ""
-//                        );
-                        FirebaseUtil.getChatroomReference(requestId).set(friendModel);
+                        // first add friend request
+                        friendModel = new FriendModel(
+                                requestId,
+                                FirebaseUtil.currentUserId(),
+                                model.getUserId(),
+                                Arrays.asList(FirebaseUtil.currentUserId(), model.getUserId()),
+                                Timestamp.now(),
+                                false
+                        );
+                        FirebaseUtil.getFriendReference(requestId).set(friendModel);
                     }
                 }
             });

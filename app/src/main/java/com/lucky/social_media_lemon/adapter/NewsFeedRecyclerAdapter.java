@@ -55,6 +55,11 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
                     }
                 });
 
+        FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(task -> {
+            UserModel postOwner = task.getResult().toObject(UserModel.class);
+            holder.postOwnerUsernameText.setText(postOwner.getUsername());
+        });
+
         FirebaseUtil.postCommentsCollectionReference(model.getPostId()).count().get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
