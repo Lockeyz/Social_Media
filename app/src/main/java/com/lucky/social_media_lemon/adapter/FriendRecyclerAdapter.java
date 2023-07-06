@@ -32,31 +32,31 @@ public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<FriendModel,
     @Override
     protected void onBindViewHolder(@NonNull FriendModelViewHolder holder, int position, @NonNull FriendModel model) {
 
-        FirebaseUtil.getOtherProfilePicStorageRef(model.getRequestSenderId()).getDownloadUrl()
-                .addOnCompleteListener(t -> {
-                    if (t.isSuccessful()){
-                        Uri uri = t.getResult();
-                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
-                    }
-                });
-
-        FirebaseUtil.getUserDetailsById(model.getRequestSenderId()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                UserModel commentOwner = task.getResult().toObject(UserModel.class);
-                holder.userName.setText(commentOwner.getUsername());
-
-
-
-            }
-        });
-
-        holder.confirmButton.setOnClickListener(v -> {
-//            FirebaseUtil.currentUserDetails().update("fff").addOnCompleteListener(task -> {
+//        FirebaseUtil.getOtherProfilePicStorageRef(model.getRequestSenderId()).getDownloadUrl()
+//                .addOnCompleteListener(t -> {
+//                    if (t.isSuccessful()){
+//                        Uri uri = t.getResult();
+//                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
+//                    }
+//                });
 //
-//            });
-            holder.confirmButton.setVisibility(View.INVISIBLE);
-            holder.deleteRequestButton.setVisibility(View.INVISIBLE);
-        });
+//        FirebaseUtil.getUserDetailsById(model.getRequestSenderId()).get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()){
+//                UserModel commentOwner = task.getResult().toObject(UserModel.class);
+//                holder.userName.setText(commentOwner.getUsername());
+//
+//
+//
+//            }
+//        });
+//
+//        holder.confirmButton.setOnClickListener(v -> {
+////            FirebaseUtil.currentUserDetails().update("fff").addOnCompleteListener(task -> {
+////
+////            });
+//            holder.confirmButton.setVisibility(View.INVISIBLE);
+//            holder.deleteRequestButton.setVisibility(View.INVISIBLE);
+//        });
 
     }
 

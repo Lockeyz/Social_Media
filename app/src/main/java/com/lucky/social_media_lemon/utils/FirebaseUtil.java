@@ -111,11 +111,22 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("notifications").document(notificationId);
     }
 
+
+    // Reference Collection friends && Document friends
+
     public static CollectionReference allFriendCollectionReference(){
-        return FirebaseFirestore.getInstance().collection("friends");
+        return FirebaseUtil.currentUserDetails().collection("friends");
     }
 
-    public static DocumentReference getFriendReference(String notificationId){
-        return FirebaseFirestore.getInstance().collection("notifications").document(notificationId);
+    public static CollectionReference allOtherUserFriendCollectionReference(String userId){
+        return FirebaseUtil.getUserDetailsById(userId).collection("friends");
+    }
+
+    public static DocumentReference getFriendReference(String receiverId){
+        return allFriendCollectionReference().document(receiverId);
+    }
+
+    public static DocumentReference getOtherUserFriendReference(String receiverId, String requestId){
+        return  allOtherUserFriendCollectionReference(receiverId).document(requestId);
     }
 }

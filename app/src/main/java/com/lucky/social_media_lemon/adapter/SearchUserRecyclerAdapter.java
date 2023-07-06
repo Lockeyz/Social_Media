@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.lucky.social_media_lemon.ChatActivity;
 import com.lucky.social_media_lemon.NotificationFragment;
 import com.lucky.social_media_lemon.OtherUserProfileActivity;
@@ -27,6 +28,7 @@ import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
+import java.sql.Time;
 import java.util.Arrays;
 
 public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserModel, SearchUserRecyclerAdapter.UserModelViewHolder> {
@@ -69,47 +71,49 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
             context.startActivity(intent);
         });
 
+
         holder.addFriendBtn.setOnClickListener(v -> {
+            if (holder.addFriendBtn.getText() == "Add friend"){
+                FirebaseUtil.getFriendReference(model.getUserId()).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                        if (!document.exists()){
 
-//            String notificationId = FirebaseUtil.allNotificationCollectionReference().document().getId();
-//            Timestamp notificationTime = Timestamp.now();
-//            String notificationSenderId = FirebaseUtil.currentUserId();
-//
-//            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
-//                if (task.isSuccessful()){
-//
-//                    String usernameSender = task.getResult().toObject(UserModel.class).getUsername();
-//                    String notificationContent = usernameSender + " sent a friend request.";
-//                    NotificationModel notificationModel = new NotificationModel(notificationId, notificationTime,
-//                            notificationSenderId, notificationContent, true);
-//
-//                    FirebaseUtil.getNotificationReference(notificationId).set(notificationModel);
-//
-//                }
-//            });
+                            FriendModel requestUser = new FriendModel(FirebaseUtil.currentUserId(),
+                                    model.getUserId(),
+                                    Timestamp.now(),
+                                    false);
 
-            String requestId = FirebaseUtil.getChatroomId(FirebaseUtil.currentUserId(), model.getUserId());
+                            FirebaseUtil.getFriendReference(model.getUserId()).set(requestUser);
 
-            FirebaseUtil.getFriendReference(requestId).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    FriendModel friendModel = task.getResult().toObject(FriendModel.class);
-                    if (friendModel==null){
-                        // first add friend request
-                        friendModel = new FriendModel(
-                                requestId,
-                                FirebaseUtil.currentUserId(),
-                                model.getUserId(),
-                                Arrays.asList(FirebaseUtil.currentUserId(), model.getUserId()),
-                                Timestamp.now(),
-                                false
-                        );
-                        FirebaseUtil.getFriendReference(requestId).set(friendModel);
+                            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()){
+                                    UserModel currentUser = task1.getResult().toObject(UserModel.class);
+                                    FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).set(requestUser);
+                                }
+                            });
+
+                            holder.addFriendBtn.setText("Cancel");
+
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            if (holder.addFriendBtn.getText()=="Cancel"){
+                holder.addFriendBtn.setText("Add friend");
+            }
 
         });
 
+        FirebaseUtil.getFriendReference(model.getUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                boolean isFriend = task.getResult().toObject(FriendModel.class).isFriend();
+                if (isFriend == true){
+                    holder.addFriendBtn.setText("Friends");
+                }
+            }
+        });
 
     }
 

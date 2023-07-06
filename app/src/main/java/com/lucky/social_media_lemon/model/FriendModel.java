@@ -6,21 +6,17 @@ import java.util.List;
 
 public class FriendModel {
     private String requestId;
-    private String requestSenderId;
-    private String requestReceiverId;
-    List<String> userIds;
+    private String receiverId;
     private Timestamp requestTime;
     private boolean isFriend;
 
     public FriendModel() {
     }
 
-    public FriendModel(String requestId, String requestSenderId, String requestReceiverId,
-                       List<String> userIds, Timestamp requestTime, boolean isFriend) {
+    public FriendModel(String requestId, String receiverId,
+                       Timestamp requestTime, boolean isFriend) {
         this.requestId = requestId;
-        this.requestSenderId = requestSenderId;
-        this.requestReceiverId = requestReceiverId;
-        this.userIds = userIds;
+        this.receiverId = receiverId;
         this.requestTime = requestTime;
         this.isFriend = isFriend;
     }
@@ -33,28 +29,12 @@ public class FriendModel {
         this.requestId = requestId;
     }
 
-    public String getRequestSenderId() {
-        return requestSenderId;
+    public String getReceiverId() {
+        return receiverId;
     }
 
-    public void setRequestSenderId(String requestSenderId) {
-        this.requestSenderId = requestSenderId;
-    }
-
-    public String getRequestReceiverId() {
-        return requestReceiverId;
-    }
-
-    public void setRequestReceiverId(String requestReceiverId) {
-        this.requestReceiverId = requestReceiverId;
-    }
-
-    public List<String> getUserIds() {
-        return userIds;
-    }
-
-    public void setUserIds(List<String> userIds) {
-        this.userIds = userIds;
+    public void setReceiverId(String requestReceiverId) {
+        this.receiverId = receiverId;
     }
 
     public Timestamp getRequestTime() {
