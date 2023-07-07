@@ -63,12 +63,6 @@ public class UserModel {
     public void setFriendIds(List<String> friendIds) {
         this.friendIds = friendIds;
     }
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 
 }

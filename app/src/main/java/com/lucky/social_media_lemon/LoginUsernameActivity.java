@@ -17,7 +17,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LoginUsernameActivity extends AppCompatActivity {
@@ -27,7 +29,6 @@ public class LoginUsernameActivity extends AppCompatActivity {
     ProgressBar progressBar;
     String phoneNumber;
     UserModel userModel;
-    List<String> friendIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,8 @@ public class LoginUsernameActivity extends AppCompatActivity {
         if (userModel!=null){
             userModel.setUsername(username);
         } else {
-            userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId(), friendIds);
+            userModel = new UserModel(phoneNumber, username, Timestamp.now(),
+                    FirebaseUtil.currentUserId(), Arrays.asList());
         }
 
         FirebaseUtil.currentUserDetails().set(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {

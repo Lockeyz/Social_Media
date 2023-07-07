@@ -2,19 +2,17 @@ package com.lucky.social_media_lemon.model;
 
 import com.google.firebase.Timestamp;
 
-import java.util.List;
-
-public class FriendModel {
+public class RequestModel {
     private String requestId;
     private String receiverId;
     private Timestamp requestTime;
     private boolean isFriend;
 
-    public FriendModel() {
+    public RequestModel() {
     }
 
-    public FriendModel(String requestId, String receiverId,
-                       Timestamp requestTime, boolean isFriend) {
+    public RequestModel(String requestId, String receiverId,
+                        Timestamp requestTime, boolean isFriend) {
         this.requestId = requestId;
         this.receiverId = receiverId;
         this.requestTime = requestTime;

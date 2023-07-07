@@ -1,7 +1,6 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lucky.social_media_lemon.R;
-import com.lucky.social_media_lemon.model.FriendModel;
-import com.lucky.social_media_lemon.model.UserModel;
-import com.lucky.social_media_lemon.utils.AndroidUtil;
-import com.lucky.social_media_lemon.utils.FirebaseUtil;
+import com.lucky.social_media_lemon.model.RequestModel;
 
-public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<FriendModel, FriendRecyclerAdapter.FriendModelViewHolder> {
+public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<RequestModel, FriendRecyclerAdapter.FriendModelViewHolder> {
 
     Context context;
 
-    public FriendRecyclerAdapter(@NonNull FirestoreRecyclerOptions<FriendModel> options, Context context) {
+    public FriendRecyclerAdapter(@NonNull FirestoreRecyclerOptions<RequestModel> options, Context context) {
         super(options);
         this.context = context;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FriendModelViewHolder holder, int position, @NonNull FriendModel model) {
+    protected void onBindViewHolder(@NonNull FriendModelViewHolder holder, int position, @NonNull RequestModel model) {
 
 //        FirebaseUtil.getOtherProfilePicStorageRef(model.getRequestSenderId()).getDownloadUrl()
 //                .addOnCompleteListener(t -> {
