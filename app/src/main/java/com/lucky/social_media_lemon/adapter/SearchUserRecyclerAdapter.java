@@ -63,51 +63,49 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
             context.startActivity(intent);
         });
 
-
-
-            FirebaseUtil.getFriendReference(model.getUserId()).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if (!document.exists()){
-                        holder.addFriendBtn.setText("Add friend");
-                        holder.addFriendBtn.setOnClickListener(v -> {
-                            //                        FriendModel requestUser = new FriendModel(FirebaseUtil.currentUserId(),
+        FirebaseUtil.getFriendReference(model.getUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                if (!document.exists()){
+                    holder.addFriendBtn.setText("Add friend");
+                    holder.addFriendBtn.setOnClickListener(v -> {
+                        //                        FriendModel requestUser = new FriendModel(FirebaseUtil.currentUserId(),
 //                                model.getUserId(),
 //                                Timestamp.now(),
 //                                true);
 
-                            FirebaseUtil.getFriendReference(model.getUserId()).set(model);
-                            FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).set(model);
-                            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()){
-                                    UserModel currentUser = task1.getResult().toObject(UserModel.class);
+                        FirebaseUtil.getFriendReference(model.getUserId()).set(model);
+                        FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).set(model);
+                        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()){
+                                UserModel currentUser = task1.getResult().toObject(UserModel.class);
 
-                                }
-                            });
-
-                            holder.addFriendBtn.setText("Cancel");
+                            }
                         });
 
+                        holder.addFriendBtn.setText("Cancel");
+                    });
 
-                    }
-                    else if (document.exists() &&
-                            !document.toObject(UserModel.class).getFriendIds().contains(model.getUserId())) {
-                        holder.addFriendBtn.setText("Cancel request");
-                        holder.addFriendBtn.setOnClickListener(v -> {
-                            FirebaseUtil.getFriendReference(model.getUserId()).delete();
-                            FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
-                            holder.addFriendBtn.setText("Add friend");
-                        });
-
-                    }
-                    else if (document.exists() &&
-                             document.toObject(UserModel.class).getFriendIds().contains(model.getUserId())) {
-                        holder.addFriendBtn.setText("Friend");
-                        holder.addFriendBtn.setEnabled(false);
-                    }
 
                 }
-            });
+                else if (document.exists() &&
+                        !document.toObject(UserModel.class).getFriendIds().contains(model.getUserId())) {
+                    holder.addFriendBtn.setText("Cancel request");
+                    holder.addFriendBtn.setOnClickListener(v -> {
+                        FirebaseUtil.getFriendReference(model.getUserId()).delete();
+                        FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
+                        holder.addFriendBtn.setText("Add friend");
+                    });
+
+                }
+                else if (document.exists() &&
+                         document.toObject(UserModel.class).getFriendIds().contains(model.getUserId())) {
+                    holder.addFriendBtn.setText("Friend");
+                    holder.addFriendBtn.setEnabled(false);
+                }
+
+            }
+        });
 
 //            if (holder.addFriendBtn.getText() == "Add friend"){
 //                holder.addFriendBtn.setText("Cancel");
