@@ -136,14 +136,19 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                             holder.cancelBtn.setEnabled(true);
                             holder.addFriendBtn.setEnabled(false);
 
+
                         }
                         else if (!document.exists() && document1.exists()) {
 
                             FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task2 -> {
                                 if (task2.isSuccessful()){
+
                                     UserModel requestedUser = task2.getResult().toObject(UserModel.class);
                                     FirebaseUtil.getFriendReference(model.getUserId()).set(model);
                                     FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).set(requestedUser);
+
+                                    FirebaseUtil.getRequestReference(model.getUserId()).delete();
+                                    FirebaseUtil.getOtherUserRequestReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
 
                                     holder.addFriendBtn.setEnabled(false);
                                     holder.addFriendBtn.setText("Friend");

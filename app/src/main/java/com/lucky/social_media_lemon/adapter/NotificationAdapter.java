@@ -39,7 +39,7 @@ public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationMo
     @NonNull
     @Override
     public NotificationModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.friend_recycler_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.request_recycler_row, parent, false);
         return new NotificationModelViewHolder(view);
     }
 

@@ -7,11 +7,11 @@
 
     <item android:title="Notifications"
         android:icon="@drawable/notification_icon"
-        android:id="@+id/menu_notifications"/>
+        android:id="@+id/menu_notification"/>
 
     <item android:title="Friends"
         android:icon="@drawable/friend_icon"
-        android:id="@+id/menu_friends"/>
+        android:id="@+id/menu_friend"/>
 
 
     <item android:title="Profile"

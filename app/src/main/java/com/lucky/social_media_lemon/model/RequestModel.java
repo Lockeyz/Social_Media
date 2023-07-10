@@ -13,7 +13,6 @@ public class RequestModel {
 
     public RequestModel(String requestId, Timestamp requestTime, boolean isRequestUser) {
         this.requestId = requestId;
-//        this.receiverId = receiverId;
         this.requestTime = requestTime;
         this.isRequestUser = isRequestUser;
     }
@@ -26,13 +25,6 @@ public class RequestModel {
         this.requestId = requestId;
     }
 
-//    public String getReceiverId() {
-//        return receiverId;
-//    }
-//
-//    public void setReceiverId(String requestReceiverId) {
-//        this.receiverId = receiverId;
-//    }
 
     public Timestamp getRequestTime() {
         return requestTime;

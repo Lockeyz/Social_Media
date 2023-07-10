@@ -39,23 +39,10 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     NewsFeedRecyclerAdapter adapter;
     LinearLayoutManager layoutManager;
-    UserModel currentUser;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-//    void getCurrentUserDetail(){
-//        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()){
-//                    currentUser = task.getResult().toObject(UserModel.class);
-////                    AndroidUtil.setProfilePic(getContext(), currentUser.getAvatarUrl(), profilePic);
-//                }
-//            }
-//        });
-//    }
 
 
     @Override
@@ -86,7 +73,8 @@ public class HomeFragment extends Fragment {
 
     void setupRecyclerView(){
         Query query = FirebaseUtil.allPostCollectionReference()
-                .orderBy("postTime", Query.Direction.DESCENDING);
+                .orderBy("postTime", Query.Direction.DESCENDING)
+                .limit(20);
 
         FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
                 .setQuery(query, PostModel.class).build();

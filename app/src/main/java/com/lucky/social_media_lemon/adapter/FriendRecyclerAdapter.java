@@ -1,6 +1,7 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.RequestModel;
+import com.lucky.social_media_lemon.utils.AndroidUtil;
+import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<RequestModel, FriendRecyclerAdapter.FriendModelViewHolder> {
 
@@ -28,13 +31,14 @@ public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<RequestModel
     @Override
     protected void onBindViewHolder(@NonNull FriendModelViewHolder holder, int position, @NonNull RequestModel model) {
 
-//        FirebaseUtil.getOtherProfilePicStorageRef(model.getRequestSenderId()).getDownloadUrl()
-//                .addOnCompleteListener(t -> {
-//                    if (t.isSuccessful()){
-//                        Uri uri = t.getResult();
-//                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
-//                    }
-//                });
+
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getRequestId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
+                    }
+                });
 //
 //        FirebaseUtil.getUserDetailsById(model.getRequestSenderId()).get().addOnCompleteListener(task -> {
 //            if (task.isSuccessful()){
@@ -59,7 +63,7 @@ public class FriendRecyclerAdapter extends FirestoreRecyclerAdapter<RequestModel
     @NonNull
     @Override
     public FriendModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.friend_recycler_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.request_recycler_row, parent, false);
         return new FriendRecyclerAdapter.FriendModelViewHolder(view);
     }
 

@@ -17,8 +17,10 @@ public class MainActivity extends AppCompatActivity {
     ImageButton searchButton;
 
     HomeFragment homeFragment;
-    ChatFragment chatFragment;
     ProfileFragment profileFragment;
+    FriendFragment friendFragment;
+    ChatFragment chatFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         homeFragment = new HomeFragment();
+        friendFragment = new FriendFragment();
         profileFragment = new ProfileFragment();
         chatFragment = new ChatFragment();
 
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (item.getItemId() == R.id.menu_profile) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, profileFragment).commit();
+                }
+                if (item.getItemId() == R.id.menu_friend) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, friendFragment).commit();
                 }
                 if (item.getItemId() == R.id.menu_chat) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, chatFragment).commit();
