@@ -122,11 +122,28 @@ public class FirebaseUtil {
         return FirebaseUtil.getUserDetailsById(userId).collection("friends");
     }
 
-    public static DocumentReference getFriendReference(String receiverId){
-        return allFriendCollectionReference().document(receiverId);
+    public static DocumentReference getFriendReference(String userId){
+        return allFriendCollectionReference().document(userId);
     }
 
-    public static DocumentReference getOtherUserFriendReference(String receiverId, String requestId){
-        return  allOtherUserFriendCollectionReference(receiverId).document(requestId);
+    public static DocumentReference getOtherUserFriendReference(String otherUserId, String currentUserId){
+        return  allOtherUserFriendCollectionReference(otherUserId).document(currentUserId);
+    }
+
+    // requests
+    public static CollectionReference allRequestCollectionReference(){
+        return FirebaseUtil.currentUserDetails().collection("requests");
+    }
+
+    public static CollectionReference allOtherUserRequestCollectionReference(String userId){
+        return FirebaseUtil.getUserDetailsById(userId).collection("requests");
+    }
+
+    public static DocumentReference getRequestReference(String receiverId){
+        return allRequestCollectionReference().document(receiverId);
+    }
+
+    public static DocumentReference getOtherUserRequestReference(String receiverId, String requestId){
+        return  allOtherUserRequestCollectionReference(receiverId).document(requestId);
     }
 }

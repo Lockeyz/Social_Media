@@ -4,19 +4,18 @@ import com.google.firebase.Timestamp;
 
 public class RequestModel {
     private String requestId;
-    private String receiverId;
+//    private String receiverId;
     private Timestamp requestTime;
-    private boolean isFriend;
+    private boolean isRequestUser;
 
     public RequestModel() {
     }
 
-    public RequestModel(String requestId, String receiverId,
-                        Timestamp requestTime, boolean isFriend) {
+    public RequestModel(String requestId, Timestamp requestTime, boolean isRequestUser) {
         this.requestId = requestId;
-        this.receiverId = receiverId;
+//        this.receiverId = receiverId;
         this.requestTime = requestTime;
-        this.isFriend = isFriend;
+        this.isRequestUser = isRequestUser;
     }
 
     public String getRequestId() {
@@ -27,13 +26,13 @@ public class RequestModel {
         this.requestId = requestId;
     }
 
-    public String getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(String requestReceiverId) {
-        this.receiverId = receiverId;
-    }
+//    public String getReceiverId() {
+//        return receiverId;
+//    }
+//
+//    public void setReceiverId(String requestReceiverId) {
+//        this.receiverId = receiverId;
+//    }
 
     public Timestamp getRequestTime() {
         return requestTime;
@@ -43,11 +42,11 @@ public class RequestModel {
         this.requestTime = requestTime;
     }
 
-    public boolean isFriend() {
-        return isFriend;
+    public boolean getIsRequestUser() {
+        return isRequestUser;
     }
 
-    public void setFriend(boolean friend) {
-        isFriend = friend;
+    public void setIsRequestUser(boolean isRequestUser) {
+        this.isRequestUser = isRequestUser;
     }
 }
