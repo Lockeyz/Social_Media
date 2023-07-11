@@ -83,6 +83,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
                         if (!document.exists() && !document1.exists()){
 
+                            holder.addFriendBtn.setEnabled(true);
                             holder.cancelBtn.setEnabled(false);
 
                         }

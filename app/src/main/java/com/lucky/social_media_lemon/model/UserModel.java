@@ -11,7 +11,6 @@ public class UserModel {
     private Timestamp createdTimestamp;
     private String userId;
     private List<String> friendIds;
-    private String avatarUrl;
 
     public UserModel() {
     }

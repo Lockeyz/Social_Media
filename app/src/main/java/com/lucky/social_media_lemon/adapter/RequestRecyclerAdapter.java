@@ -58,8 +58,10 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
                        FirebaseUtil.getFriendReference(model.getRequestId()).set(requestUser);
                        FirebaseUtil.getOtherUserFriendReference(model.getRequestId(), FirebaseUtil.currentUserId()).set(requestedUser);
 
-                       FirebaseUtil.getRequestReference(model.getRequestId()).delete();
+                       // Xoa document cua nguoi khac truoc vi dang su dung model chinh la document se xoa
                        FirebaseUtil.getOtherUserRequestReference(model.getRequestId(), FirebaseUtil.currentUserId()).delete();
+                       FirebaseUtil.getRequestReference(model.getRequestId()).delete();
+
 
                        holder.confirmButton.setEnabled(false);
                        holder.confirmButton.setText("Friend");
@@ -71,10 +73,12 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
         });
 
         holder.deleteRequestButton.setOnClickListener(v -> {
+
+            FirebaseUtil.getOtherUserFriendReference(model.getRequestId(), FirebaseUtil.currentUserId()).delete();
             FirebaseUtil.getRequestReference(model.getRequestId()).delete();
-            FirebaseUtil.getOtherUserFriendReference(model.getRequestId(), FirebaseUtil.currentUserId());
-            holder.confirmButton.setEnabled(false);
-            holder.deleteRequestButton.setEnabled(false);
+
+//            holder.confirmButton.setEnabled(false);
+//            holder.deleteRequestButton.setEnabled(false);
         });
 
 
