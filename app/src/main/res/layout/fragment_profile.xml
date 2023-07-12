@@ -12,9 +12,10 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/circular_bg"
-        android:backgroundTint="@color/my_primary"
+        android:backgroundTint="@color/white"
         android:src="@drawable/person_icon"
         android:scaleType="centerCrop"
+        android:padding="8dp"
         android:layout_marginBottom="40dp"
         android:id="@+id/profile_image_view"/>
 

@@ -62,6 +62,21 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+        profilePic.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    UserModel currentUser = task.getResult().toObject(UserModel.class);
+                    AndroidUtil.passUserModelAsIntent(intent, currentUser);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+
+
+        });
+
+
         statusTextView.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), CreatePostActivity.class));
         });

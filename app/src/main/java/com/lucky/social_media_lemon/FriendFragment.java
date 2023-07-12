@@ -54,11 +54,11 @@ public class FriendFragment extends Fragment {
 
         // setup request
         // ?? su dung .oderBy() thi khong lay dc query??
+        // .orderBy("requestTime", Query.Direction.ASCENDING)
         // .orderBy("requestTime", Query.Direction.DESCENDING);
 
         Query query = FirebaseUtil.allRequestCollectionReference()
                 .whereEqualTo("isRequestUser", false);
-
 
         FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()
                 .setQuery(query, RequestModel.class).build();

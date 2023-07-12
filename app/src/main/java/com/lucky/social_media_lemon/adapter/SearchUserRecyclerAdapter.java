@@ -3,8 +3,7 @@ package com.lucky.social_media_lemon.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +19,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.lucky.social_media_lemon.ChatActivity;
-import com.lucky.social_media_lemon.OtherUserProfileActivity;
+
+import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.RequestModel;
 import com.lucky.social_media_lemon.model.UserModel;
@@ -65,7 +65,8 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         });
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, OtherUserProfileActivity.class);
+            Intent intent = new Intent(context, ProfileActivity.class);
+            AndroidUtil.passUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });

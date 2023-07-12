@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lucky.social_media_lemon.ChatActivity;
+import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
@@ -52,6 +53,13 @@ public class FriendListRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
         holder.messageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
+            AndroidUtil.passUserModelAsIntent(intent, model);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
             AndroidUtil.passUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
