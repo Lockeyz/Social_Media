@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.FriendListRecyclerAdapter;
 import com.lucky.social_media_lemon.adapter.RequestRecyclerAdapter;
@@ -52,13 +54,13 @@ public class FriendFragment extends Fragment {
 
     void setupFriendRecyclerView() {
 
-        // setup request
-        // ?? su dung .oderBy() thi khong lay dc query??
-        // .orderBy("requestTime", Query.Direction.ASCENDING)
-        // .orderBy("requestTime", Query.Direction.DESCENDING);
+        // Neu su dung .orderBy() để sắp xếp theo trường Time cùng .where() thì trong
+        // .where() cũng cần có trường Time, còn không sẽ không lấy được query
 
         Query query = FirebaseUtil.allRequestCollectionReference()
-                .whereEqualTo("isRequestUser", false);
+                .where(Filter.and(Filter.equalTo("isRequestUser", false),
+                                Filter.lessThanOrEqualTo("requestTime", Timestamp.now())));
+//                .orderBy("requestTime", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()
                 .setQuery(query, RequestModel.class).build();

@@ -64,7 +64,9 @@ public class CreatePostActivity extends AppCompatActivity {
         });
 
         postBtn.setOnClickListener(v -> {
+            postBtn.setEnabled(false);
             uploadToFirebase();
+            postBtn.setEnabled(true);
         });
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -102,8 +104,9 @@ public class CreatePostActivity extends AppCompatActivity {
                 likedUserIds);
         FirebaseUtil.getPostReference(postId).set(postModel);
         AndroidUtil.showToast(CreatePostActivity.this, "Your post was uploaded");
-        Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
-        startActivity(intent);
+        onBackPressed();
+//        Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);
+//        startActivity(intent);
         finish();
     }
 

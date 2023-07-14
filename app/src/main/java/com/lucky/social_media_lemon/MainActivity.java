@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.main_search_btn);
 
         searchButton.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, SearchUserActivity.class));
+            Intent intent = new Intent(this, SearchUserActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         });
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {

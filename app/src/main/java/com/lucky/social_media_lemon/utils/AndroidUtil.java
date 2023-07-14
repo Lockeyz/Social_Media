@@ -34,4 +34,8 @@ public class AndroidUtil {
     public static void setProfilePic(Context context, Uri imageUrl, ImageView imageView){
         Glide.with(context).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(imageView);
     }
+
+    public static void setCoverPic(Context context, Uri imageUrl, ImageView imageView){
+        Glide.with(context).load(imageUrl).into(imageView);
+    }
 }

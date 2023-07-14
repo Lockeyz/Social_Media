@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.RecentChatRecyclerAdapter;
 import com.lucky.social_media_lemon.model.ChatRoomModel;
@@ -38,8 +40,12 @@ public class ChatFragment extends Fragment {
 
     void setupRecyclerView(){
 
+        // Nếu sử dụng .orderBy() để sắp xếp theo trường Time cùng .where() thì trong
+        // .where() cũng cần có trường Time, còn không sẽ không lấy được query
+        // Sử dụng .notEqualTo() thì load ngay, .lessThanOrEqualTo thì phải tải lại lần nữa mới load
         Query query = FirebaseUtil.allChatroomCollectionReference()
-                .whereArrayContains("userIds", FirebaseUtil.currentUserId())
+                .where(Filter.and(Filter.arrayContains("userIds", FirebaseUtil.currentUserId()),
+                                Filter.notEqualTo("lastMessageTimestamp", Timestamp.now())))
                 .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<ChatRoomModel> options = new FirestoreRecyclerOptions.Builder<ChatRoomModel>()
@@ -54,21 +60,25 @@ public class ChatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.startListening();
+        }
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.stopListening();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.notifyDataSetChanged();
+        }
     }
 }

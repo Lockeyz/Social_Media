@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.CommentActivity;
 import com.lucky.social_media_lemon.MainActivity;
+import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.SearchUserActivity;
 import com.lucky.social_media_lemon.constants.Constants;
@@ -54,6 +55,19 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
                         AndroidUtil.setProfilePic(context, uri, holder.postAvatarImage);
                     }
                 });
+
+        holder.postAvatarImage.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    UserModel userModel = task.getResult().toObject(UserModel.class);
+                    AndroidUtil.passUserModelAsIntent(intent, userModel);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
+
+        });
 
         FirebaseUtil.getUserDetailsById(model.getPostUserId()).get().addOnCompleteListener(task -> {
             UserModel postOwner = task.getResult().toObject(UserModel.class);

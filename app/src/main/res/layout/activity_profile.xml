@@ -112,6 +112,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginStart="16dp"/>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,7 +132,7 @@
                             android:id="@+id/friend_btn"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
-                            app:icon="@drawable/person_icon"
+                            app:icon="@drawable/checked_friend_icon"
                             android:text="Friend" />
                     </LinearLayout>
 
@@ -162,6 +163,43 @@
                     android:layout_marginTop="16dp"/>
 
             </RelativeLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Details"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginHorizontal="16dp"/>
+
+                <TextView
+                    android:id="@+id/phone_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="0366 666 666"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:layout_margin="16dp"/>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    app:dividerColor="@color/light_gray"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/wall_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/post_layout"
@@ -216,13 +254,6 @@
 
             </LinearLayout>
 
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/wall_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
 
         </LinearLayout>
 

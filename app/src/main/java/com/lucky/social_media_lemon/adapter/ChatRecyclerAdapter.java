@@ -14,6 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.ChatMessageModel;
+import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageModel, ChatRecyclerAdapter.ChatModelViewHolder> {

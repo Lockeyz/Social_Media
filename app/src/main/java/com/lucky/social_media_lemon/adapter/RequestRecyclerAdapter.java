@@ -49,6 +49,8 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
             }
         });
 
+        holder.requestTime.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getRequestTime()));
+
         holder.confirmButton.setOnClickListener(v -> {
             FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
                 FirebaseUtil.getUserDetailsById(model.getRequestId()).get().addOnCompleteListener(task1 -> {
@@ -108,6 +110,7 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
 
         ImageView profilePic;
         TextView userName;
+        TextView requestTime;
         Button confirmButton;
         Button deleteRequestButton;
 
@@ -116,6 +119,7 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
 
             profilePic = itemView.findViewById(R.id.profile_pic_image_view);
             userName = itemView.findViewById(R.id.username_text_view);
+            requestTime = itemView.findViewById(R.id.request_time_text);
             confirmButton = itemView.findViewById(R.id.confirm_btn);
             deleteRequestButton = itemView.findViewById(R.id.delete_request_btn);
         }
