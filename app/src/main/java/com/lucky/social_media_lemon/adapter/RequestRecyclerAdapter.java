@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.RequestModel;
@@ -66,6 +67,11 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
                        FirebaseUtil.getOtherUserRequestReference(model.getRequestId(), FirebaseUtil.currentUserId()).delete();
                        FirebaseUtil.getRequestReference(model.getRequestId()).delete();
 
+                       FirebaseUtil.currentUserDetails()
+                               .update("friendIds", FieldValue.arrayUnion(model.getRequestId()));
+                       FirebaseUtil.getUserDetailsById(model.getRequestId())
+                               .update("friendIds", FieldValue.arrayUnion(FirebaseUtil.currentUserId()));
+
 
                        holder.confirmButton.setEnabled(false);
                        holder.confirmButton.setText("Friend");
@@ -78,7 +84,7 @@ public class RequestRecyclerAdapter extends FirestoreRecyclerAdapter<RequestMode
 
         holder.deleteRequestButton.setOnClickListener(v -> {
 
-            FirebaseUtil.getOtherUserFriendReference(model.getRequestId(), FirebaseUtil.currentUserId()).delete();
+            FirebaseUtil.getOtherUserRequestReference(model.getRequestId(), FirebaseUtil.currentUserId()).delete();
             FirebaseUtil.getRequestReference(model.getRequestId()).delete();
 
         });

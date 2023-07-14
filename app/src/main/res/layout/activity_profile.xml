@@ -194,11 +194,6 @@
                     android:layout_height="8dp"
                     app:dividerColor="@color/light_gray"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/wall_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -254,6 +249,10 @@
 
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/wall_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

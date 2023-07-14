@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.ChatActivity;
 import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
@@ -48,6 +49,11 @@ public class FriendListRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
             // Xoa document cua nguoi khac truoc vi dang su dung model chinh la document se xoa
             FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
             FirebaseUtil.getFriendReference(model.getUserId()).delete();
+
+            FirebaseUtil.currentUserDetails()
+                    .update("friendIds", FieldValue.arrayRemove(model.getUserId()));
+            FirebaseUtil.getUserDetailsById(model.getUserId())
+                    .update("friendIds", FieldValue.arrayRemove(FirebaseUtil.currentUserId()));
 
         });
 

@@ -135,15 +135,15 @@ public class FirebaseUtil {
         return FirebaseUtil.currentUserDetails().collection("requests");
     }
 
-    public static CollectionReference allOtherUserRequestCollectionReference(String userId){
-        return FirebaseUtil.getUserDetailsById(userId).collection("requests");
+    public static CollectionReference allOtherUserRequestCollectionReference(String otherUserId){
+        return FirebaseUtil.getUserDetailsById(otherUserId).collection("requests");
     }
 
     public static DocumentReference getRequestReference(String receiverId){
         return allRequestCollectionReference().document(receiverId);
     }
 
-    public static DocumentReference getOtherUserRequestReference(String receiverId, String requestId){
-        return  allOtherUserRequestCollectionReference(receiverId).document(requestId);
+    public static DocumentReference getOtherUserRequestReference(String otherUserId, String currentUserId){
+        return  allOtherUserRequestCollectionReference(otherUserId).document(currentUserId);
     }
 }

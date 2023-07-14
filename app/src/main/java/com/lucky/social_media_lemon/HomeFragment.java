@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
 import com.lucky.social_media_lemon.model.PostModel;
@@ -87,21 +88,40 @@ public class HomeFragment extends Fragment {
     }
 
     void setupRecyclerView(){
-        Query query = FirebaseUtil.allPostCollectionReference()
-                .orderBy("postTime", Query.Direction.DESCENDING)
-                .limit(20);
 
-        FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
-                .setQuery(query, PostModel.class).build();
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                UserModel currentUser = task.getResult().toObject(UserModel.class);
+                Query query;
+                if (currentUser.getFriendIds().isEmpty()){
+                    query = FirebaseUtil.allPostCollectionReference()
+                            .whereEqualTo("postUserId", FirebaseUtil.currentUserId())
+                            .limit(20);
+                    AndroidUtil.showToast(getContext(), "2222");
+                } else {
+                    query = FirebaseUtil.allPostCollectionReference()
+                            .where(Filter.or(Filter.equalTo("postUserId", FirebaseUtil.currentUserId()),
+                                    Filter.inArray("postUserId", currentUser.getFriendIds())))
+                            .limit(20);
+                    AndroidUtil.showToast(getContext(), "1111");
+                }
 
-        adapter = new NewsFeedRecyclerAdapter(options, getContext());
+                FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
+                        .setQuery(query, PostModel.class).build();
 
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+                adapter = new NewsFeedRecyclerAdapter(options, getContext());
 
-        layoutManager.onRestoreInstanceState(layoutManager.onSaveInstanceState());
-        adapter.startListening();
+                layoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+
+                layoutManager.onRestoreInstanceState(layoutManager.onSaveInstanceState());
+                adapter.startListening();
+            }
+        });
+
+
+
     }
 
     @Override

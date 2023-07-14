@@ -19,7 +19,10 @@ import com.lucky.social_media_lemon.adapter.FriendListRecyclerAdapter;
 import com.lucky.social_media_lemon.adapter.RequestRecyclerAdapter;
 import com.lucky.social_media_lemon.model.RequestModel;
 import com.lucky.social_media_lemon.model.UserModel;
+import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
+
+import java.util.Date;
 
 
 public class FriendFragment extends Fragment {
@@ -46,7 +49,6 @@ public class FriendFragment extends Fragment {
 //        setupRequestRecyclerView();
         setupFriendRecyclerView();
 
-
         return view;
 
 
@@ -58,8 +60,11 @@ public class FriendFragment extends Fragment {
         // .where() cũng cần có trường Time, còn không sẽ không lấy được query
 
         Query query = FirebaseUtil.allRequestCollectionReference()
-                .where(Filter.and(Filter.equalTo("isRequestUser", false),
-                                Filter.lessThanOrEqualTo("requestTime", Timestamp.now())));
+                .whereEqualTo("isRequestUser", false);
+
+//        Query query = FirebaseUtil.allRequestCollectionReference()
+//                .where(Filter.and(Filter.equalTo("isRequestUser", false),
+//                                Filter.greaterThanOrEqualTo("requestTime", new Timestamp(new Date()))))
 //                .orderBy("requestTime", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()

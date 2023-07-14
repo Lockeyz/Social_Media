@@ -10,7 +10,9 @@ import android.widget.ImageButton;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
+import com.lucky.social_media_lemon.adapter.RequestRecyclerAdapter;
 import com.lucky.social_media_lemon.adapter.SearchUserRecyclerAdapter;
+import com.lucky.social_media_lemon.model.RequestModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
@@ -60,27 +62,32 @@ public class SearchUserActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         adapter.startListening();
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.startListening();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.stopListening();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (adapter!=null)
+        if (adapter!=null){
             adapter.notifyDataSetChanged();
+        }
     }
 
 }

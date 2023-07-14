@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.ChatActivity;
 
 import com.lucky.social_media_lemon.ProfileActivity;
@@ -152,6 +154,11 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                                     FirebaseUtil.getRequestReference(model.getUserId()).delete();
                                     FirebaseUtil.getOtherUserRequestReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
 
+                                    FirebaseUtil.currentUserDetails()
+                                            .update("friendIds", FieldValue.arrayUnion(model.getUserId()));
+                                    FirebaseUtil.getUserDetailsById(model.getUserId())
+                                            .update("friendIds", FieldValue.arrayUnion(FirebaseUtil.currentUserId()));
+
                                     holder.addFriendBtn.setEnabled(false);
                                     holder.addFriendBtn.setText("Friend");
                                     holder.cancelBtn.setEnabled(true);
@@ -179,8 +186,8 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                         }
                         else if (!document.exists() && document1.exists()) {
 
-                            FirebaseUtil.getRequestReference(model.getUserId()).delete();
                             FirebaseUtil.getOtherUserRequestReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
+                            FirebaseUtil.getRequestReference(model.getUserId()).delete();
 
                             holder.addFriendBtn.setEnabled(true);
                             holder.addFriendBtn.setText("Add friend");
@@ -192,10 +199,16 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
                         else if (document.exists()) {
 
-                            FirebaseUtil.getFriendReference(model.getUserId()).delete();
                             FirebaseUtil.getOtherUserFriendReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
-                            FirebaseUtil.getRequestReference(model.getUserId()).delete();
+                            FirebaseUtil.getFriendReference(model.getUserId()).delete();
+
                             FirebaseUtil.getOtherUserRequestReference(model.getUserId(), FirebaseUtil.currentUserId()).delete();
+                            FirebaseUtil.getRequestReference(model.getUserId()).delete();
+
+                            FirebaseUtil.currentUserDetails()
+                                    .update("friendIds", FieldValue.arrayRemove(model.getUserId()));
+                            FirebaseUtil.getUserDetailsById(model.getUserId())
+                                    .update("friendIds", FieldValue.arrayRemove(FirebaseUtil.currentUserId()));
 
                             holder.addFriendBtn.setEnabled(true);
                             holder.addFriendBtn.setText("Add friend");

@@ -3,6 +3,7 @@ package com.lucky.social_media_lemon;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
@@ -17,7 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.firestore.Query;
+import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
+import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
@@ -46,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> avatarImagePickLauncher;
     Uri selectedCoverImageUri;
     Uri selectedAvatarImageUri;
+    NewsFeedRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
             postLayout.setVisibility(View.GONE);
         }
 
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
         coverImagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK){
@@ -107,10 +117,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
-        backBtn.setOnClickListener(v -> {
-            onBackPressed();
-        });
-
 
         FirebaseUtil.getOtherProfilePicStorageRef(user.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {
@@ -120,10 +126,6 @@ public class ProfileActivity extends AppCompatActivity {
                         AndroidUtil.setProfilePic(this, uri, postImage);
                     }
                 });
-
-
-
-        profileName.setText(user.getUsername());
 
         coverChangeBtn.setOnClickListener(v -> {
             ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
@@ -147,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
                     });
         });
 
+        profileName.setText(user.getUsername());
+
         messageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, ChatActivity.class);
             AndroidUtil.passUserModelAsIntent(intent, user);
@@ -154,15 +158,53 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        phoneText.setText(user.getPhone());
+
         postText.setOnClickListener(v -> {
             Intent intent = new Intent(this, CreatePostActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 
+        setupRecyclerView();
 
+    }
 
-        phoneText.setText(user.getPhone());
+    private void setupRecyclerView() {
+        Query query = FirebaseUtil.allPostCollectionReference()
+                .whereEqualTo("postUserId", user.getUserId());
 
+        FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
+                .setQuery(query, PostModel.class).build();
+
+        adapter = new NewsFeedRecyclerAdapter(options, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter!=null){
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter!=null){
+            adapter.stopListening();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter!=null){
+            adapter.notifyDataSetChanged();
+        }
     }
 }
