@@ -32,6 +32,7 @@ import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -92,18 +93,22 @@ public class HomeFragment extends Fragment {
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 UserModel currentUser = task.getResult().toObject(UserModel.class);
+                List<String> userIds = currentUser.getFriendIds();
+                userIds.add(FirebaseUtil.currentUserId());
+
                 Query query;
                 if (currentUser.getFriendIds().isEmpty()){
                     query = FirebaseUtil.allPostCollectionReference()
                             .whereEqualTo("postUserId", FirebaseUtil.currentUserId())
                             .limit(20);
-                    AndroidUtil.showToast(getContext(), "2222");
                 } else {
+//                    query = FirebaseUtil.allPostCollectionReference()
+//                            .where(Filter.or(Filter.equalTo("postUserId", FirebaseUtil.currentUserId()),
+//                                    Filter.inArray("postUserId", currentUser.getFriendIds())))
+//                            .limit(20);
                     query = FirebaseUtil.allPostCollectionReference()
-                            .where(Filter.or(Filter.equalTo("postUserId", FirebaseUtil.currentUserId()),
-                                    Filter.inArray("postUserId", currentUser.getFriendIds())))
+                            .whereIn("postUserId", userIds)
                             .limit(20);
-                    AndroidUtil.showToast(getContext(), "1111");
                 }
 
                 FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()

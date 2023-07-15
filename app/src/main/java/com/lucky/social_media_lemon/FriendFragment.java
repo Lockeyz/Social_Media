@@ -22,6 +22,9 @@ import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -62,10 +65,6 @@ public class FriendFragment extends Fragment {
         Query query = FirebaseUtil.allRequestCollectionReference()
                 .whereEqualTo("isRequestUser", false);
 
-//        Query query = FirebaseUtil.allRequestCollectionReference()
-//                .where(Filter.and(Filter.equalTo("isRequestUser", false),
-//                                Filter.greaterThanOrEqualTo("requestTime", new Timestamp(new Date()))))
-//                .orderBy("requestTime", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()
                 .setQuery(query, RequestModel.class).build();
