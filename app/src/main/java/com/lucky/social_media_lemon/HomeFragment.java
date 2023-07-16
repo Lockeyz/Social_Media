@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
 
 
         statusTextView.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), CreatePostActivity.class));
+            startActivity(new Intent(getContext(), CreatePostActivity.class));
         });
 
         setupRecyclerView();

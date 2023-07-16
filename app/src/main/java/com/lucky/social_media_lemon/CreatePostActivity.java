@@ -97,11 +97,11 @@ public class CreatePostActivity extends AppCompatActivity {
             activityResultLauncher.launch(photoPicker);
         });
 
-        if (getIntent()!=null){
+        if (postModel.getPostId() != null){
             captionInput.setText(postModel.getCaption());
-            if (addImageBtn.isActivated()==false){
-                Glide.with(this).load(postModel.getPictureUrl()).into(image);
-            }
+//            if (addImageBtn.isActivated()==false){
+            Glide.with(this).load(postModel.getPictureUrl()).into(image);
+
         }
 
     }
@@ -112,7 +112,11 @@ public class CreatePostActivity extends AppCompatActivity {
         String postUserId = FirebaseUtil.currentUserId();
         Timestamp postTime = Timestamp.now();
         List<String> likedUserIds = new ArrayList<>();
-        if (getIntent() == null) {
+
+//        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
+//                likedUserIds);
+//        FirebaseUtil.getPostReference(postId).set(postModel);
+        if (postModel.getPostId()==null) {
 
             PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
                     likedUserIds);
@@ -121,10 +125,14 @@ public class CreatePostActivity extends AppCompatActivity {
         } else { // Update post duoc edit
             if (pictureUrl!=null){
                 FirebaseUtil.getPostReference(postModel.getPostId())
-                        .update("caption", caption, "pictureUrl", pictureUrl);
+                        .update("caption", caption,
+                                "pictureUrl", pictureUrl,
+                                "postTime", Timestamp.now());
             } else {
                 FirebaseUtil.getPostReference(postModel.getPostId())
-                        .update("caption", caption, "pictureUrl", postModel.getPictureUrl());
+                        .update("caption", caption,
+                                "pictureUrl", postModel.getPictureUrl(),
+                                "postTime", Timestamp.now());
             }
         }
 
