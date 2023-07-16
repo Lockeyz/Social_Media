@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.RequestRecyclerAdapter;
 import com.lucky.social_media_lemon.adapter.SearchUserRecyclerAdapter;

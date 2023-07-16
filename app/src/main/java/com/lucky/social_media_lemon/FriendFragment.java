@@ -34,8 +34,6 @@ public class FriendFragment extends Fragment {
     RecyclerView friendRecyclerView;
     RequestRecyclerAdapter requestAdapter;
     FriendListRecyclerAdapter friendAdapter;
-    LinearLayoutManager requestLayoutManager;
-    LinearLayoutManager friendLayoutManager;
     public FriendFragment() {
         // Required empty public constructor
     }
@@ -49,7 +47,7 @@ public class FriendFragment extends Fragment {
         requestRecyclerView = view.findViewById(R.id.add_friend_request_recycler_view);
         friendRecyclerView = view.findViewById(R.id.friend_list_recycler_view);
 
-//        setupRequestRecyclerView();
+        setupRequestRecyclerView();
         setupFriendRecyclerView();
 
         return view;
@@ -57,78 +55,39 @@ public class FriendFragment extends Fragment {
 
     }
 
-    void setupFriendRecyclerView() {
+    void setupRequestRecyclerView() {
 
-        // Neu su dung .orderBy() để sắp xếp theo trường Time cùng .where() thì trong
-        // .where() cũng cần có trường Time, còn không sẽ không lấy được query
-
+        // Cần tạo Composite index trên Firebase mới có thể sử dụng .orderBy cùng .where()
         Query query = FirebaseUtil.allRequestCollectionReference()
-                .whereEqualTo("isRequestUser", false);
+                .whereEqualTo("isRequestUser", false)
+                .orderBy("requestTime", Query.Direction.DESCENDING);
 
 
         FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()
                 .setQuery(query, RequestModel.class).build();
 
         requestAdapter = new RequestRecyclerAdapter(options, getContext());
-
-        requestLayoutManager = new LinearLayoutManager(getContext());
-        requestRecyclerView.setLayoutManager(requestLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        requestRecyclerView.setLayoutManager(linearLayoutManager);
         requestRecyclerView.setAdapter(requestAdapter);
 
         requestAdapter.startListening();
+    }
+    void setupFriendRecyclerView() {
 
-        // setup friend list
-        Query query1 = FirebaseUtil.allFriendCollectionReference()
+        Query query = FirebaseUtil.allFriendCollectionReference()
                 .orderBy("username", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<UserModel> options1 = new FirestoreRecyclerOptions.Builder<UserModel>()
-                .setQuery(query1, UserModel.class).build();
+        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
+                .setQuery(query, UserModel.class).build();
 
-        friendAdapter = new FriendListRecyclerAdapter(options1, getContext());
+        friendAdapter = new FriendListRecyclerAdapter(options, getContext());
 
-        friendLayoutManager = new LinearLayoutManager(getContext());
-        friendRecyclerView.setLayoutManager(friendLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        friendRecyclerView.setLayoutManager(linearLayoutManager);
         friendRecyclerView.setAdapter(friendAdapter);
 
         friendAdapter.startListening();
-
-        RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (recyclerView == requestRecyclerView) {
-                    int lastVisibleItemPosition = requestLayoutManager.findLastVisibleItemPosition();
-                    int totalItemCount = requestLayoutManager.getItemCount();
-                    if (lastVisibleItemPosition == totalItemCount - 1) {
-                        // Cuộn hết item trong RecyclerView 1
-                        // Chuyển đến RecyclerView 2
-                        friendRecyclerView.scrollToPosition(0);
-                    }
-                }
-            }
-        };
-
-        requestRecyclerView.addOnScrollListener(scrollListener);
-
-    }
-
-    void setupRequestRecyclerView() {
-
-        Query query1 = FirebaseUtil.allRequestCollectionReference()
-                .whereEqualTo("isRequestUser", false)
-                .orderBy("requestTime", Query.Direction.DESCENDING);
-
-        FirestoreRecyclerOptions<RequestModel> options = new FirestoreRecyclerOptions.Builder<RequestModel>()
-                .setQuery(query1, RequestModel.class).build();
-
-        requestAdapter = new RequestRecyclerAdapter(options, getContext());
-
-        requestLayoutManager = new LinearLayoutManager(getContext());
-        requestRecyclerView.setLayoutManager(requestLayoutManager);
-        requestRecyclerView.setAdapter(requestAdapter);
-
-        requestAdapter.startListening();
-
 
     }
 
