@@ -8,7 +8,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
+
+import java.util.Collections;
 
 
 public class AndroidUtil {
@@ -29,6 +32,27 @@ public class AndroidUtil {
         userModel.setPhone(intent.getStringExtra("phone"));
         userModel.setUserId(intent.getStringExtra("userId"));
         return userModel;
+    }
+
+    public static void passPostModelAsIntent(Intent intent, PostModel model){
+        intent.putExtra("postId", model.getPostId());
+        intent.putExtra("postUserId", model.getPostUserId());
+//        intent.putExtra("postTime", model.getPostTime());
+        intent.putExtra("caption", model.getCaption());
+        intent.putExtra("pictureUrl", model.getPictureUrl());
+//        intent.putExtra("likeUserIds", (CharSequence) model.getLikedUserIds());
+
+    }
+
+    public static PostModel getPostModelFromIntent(Intent intent){
+        PostModel postModel = new PostModel();
+        postModel.setPostId(intent.getStringExtra("postId"));
+        postModel.setPostUserId(intent.getStringExtra("postUserId"));
+//        postModel.setPostTime(intent.getStringExtra("postTime"));
+        postModel.setCaption(intent.getStringExtra("caption"));
+        postModel.setPictureUrl(intent.getStringExtra("pictureUrl"));
+//        postModel.setLikedUserIds(Collections.singletonList(intent.getStringExtra("likeUserIds")));
+        return postModel;
     }
 
     public static void setProfilePic(Context context, Uri imageUrl, ImageView imageView){

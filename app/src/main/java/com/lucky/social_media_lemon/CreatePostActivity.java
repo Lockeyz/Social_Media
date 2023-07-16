@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -44,6 +45,7 @@ public class CreatePostActivity extends AppCompatActivity {
     ImageButton addImageBtn;
     ProgressBar progressBar;
     Uri imageUri;
+    PostModel postModel;
 //    final  private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Images");
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference("ImagesStore");
 
@@ -52,12 +54,15 @@ public class CreatePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
+        postModel = AndroidUtil.getPostModelFromIntent(getIntent());
+
         backBtn = findViewById(R.id.back_btn);
         postBtn = findViewById(R.id.post_btn_text_view);
         captionInput = findViewById(R.id.cation_edit_text);
         image = findViewById(R.id.picture_image_view);
         addImageBtn = findViewById(R.id.add_image_btn);
         progressBar = findViewById(R.id.progressBar);
+
 
         backBtn.setOnClickListener(v -> {
             onBackPressed();
@@ -91,6 +96,14 @@ public class CreatePostActivity extends AppCompatActivity {
             photoPicker.setType("image/*");
             activityResultLauncher.launch(photoPicker);
         });
+
+        if (getIntent()!=null){
+            captionInput.setText(postModel.getCaption());
+            if (addImageBtn.isActivated()==false){
+                Glide.with(this).load(postModel.getPictureUrl()).into(image);
+            }
+        }
+
     }
 
     private void uploadPost(String pictureUrl){
@@ -99,10 +112,22 @@ public class CreatePostActivity extends AppCompatActivity {
         String postUserId = FirebaseUtil.currentUserId();
         Timestamp postTime = Timestamp.now();
         List<String> likedUserIds = new ArrayList<>();
+        if (getIntent() == null) {
 
-        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
-                likedUserIds);
-        FirebaseUtil.getPostReference(postId).set(postModel);
+            PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
+                    likedUserIds);
+            FirebaseUtil.getPostReference(postId).set(postModel);
+
+        } else { // Update post duoc edit
+            if (pictureUrl!=null){
+                FirebaseUtil.getPostReference(postModel.getPostId())
+                        .update("caption", caption, "pictureUrl", pictureUrl);
+            } else {
+                FirebaseUtil.getPostReference(postModel.getPostId())
+                        .update("caption", caption, "pictureUrl", postModel.getPictureUrl());
+            }
+        }
+
         AndroidUtil.showToast(CreatePostActivity.this, "Your post was uploaded");
         onBackPressed();
 //        Intent intent = new Intent(CreatePostActivity.this, MainActivity.class);

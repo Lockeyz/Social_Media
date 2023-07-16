@@ -1,13 +1,18 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +31,7 @@ import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.lucky.social_media_lemon.CommentActivity;
+import com.lucky.social_media_lemon.CreatePostActivity;
 import com.lucky.social_media_lemon.MainActivity;
 import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
@@ -96,6 +102,50 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             holder.likeText.setTextColor(context.getResources().getColor(R.color.grey_text));
         }
 
+        if (!model.getPostUserId().contains(FirebaseUtil.currentUserId())){
+            holder.moreBtn.setVisibility(View.INVISIBLE);
+        } else {
+            holder.moreBtn.setVisibility(View.VISIBLE);
+        }
+
+        // setup  more_action dialog
+        holder.moreBtn.setOnClickListener(v -> {
+            Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.bottom_sheet_layout);
+
+            LinearLayout editPostLayout = dialog.findViewById(R.id.edit_post_layout);
+            LinearLayout deletePostLayout = dialog.findViewById(R.id.delete_post_layout);
+            ImageView cancelBtn = dialog.findViewById(R.id.cancelButton);
+
+            editPostLayout.setOnClickListener(v1 -> {
+                Intent intent = new Intent(context, CreatePostActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                AndroidUtil.passPostModelAsIntent(intent, model);
+                context.startActivity(intent);
+
+                dialog.dismiss();
+            });
+
+            deletePostLayout.setOnClickListener(v1 -> {
+
+                FirebaseUtil.getPostReference(model.getPostId()).delete();
+                dialog.dismiss();
+                AndroidUtil.showToast(context, "Delete post successfully");
+
+            });
+
+             cancelBtn.setOnClickListener(v1 -> {
+                 dialog.dismiss();
+             });
+
+            dialog.show();
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations = com.google.android.material.R.style.Animation_MaterialComponents_BottomSheetDialog;
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+        });
+
         holder.likeLinear.setOnClickListener(v -> {
             holder.likeLinear.setEnabled(false);
             if (!model.getLikedUserIds().contains(FirebaseUtil.currentUserId())) {
@@ -146,6 +196,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         ImageView postAvatarImage;
         TextView postOwnerUsernameText;
         TextView postedTimeText;
+        ImageButton moreBtn;
         TextView likeText;
 
         public PostModelViewHolder(@NonNull View itemView) {
@@ -161,6 +212,7 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             shareIconBtn = itemView.findViewById(R.id.share_icon_btn);
             postAvatarImage = itemView.findViewById(R.id.post_avatar_image_view);
             postOwnerUsernameText = itemView.findViewById(R.id.post_username_text_view);
+            moreBtn = itemView.findViewById(R.id.more_btn);
             postedTimeText = itemView.findViewById(R.id.tv_posted_time);
         }
     }

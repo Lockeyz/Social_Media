@@ -97,6 +97,7 @@
         <com.hbb20.CountryCodePicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:ccp_defaultNameCode="VN"
             android:id="@+id/login_country_code"/>
 
         <EditText
