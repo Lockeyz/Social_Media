@@ -88,12 +88,18 @@ public class FirebaseUtil {
         FirebaseAuth.getInstance().signOut();
     }
 
+    // get Reference avatar and cover
     public static StorageReference getCurrentProfilePicStorageRef(){
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
     }
     public static StorageReference getOtherProfilePicStorageRef(String otherUserId){
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
+                .child(otherUserId);
+    }
+
+    public static StorageReference getOtherProfileCoverStorageRef(String otherUserId){
+        return FirebaseStorage.getInstance().getReference().child("profile_cover")
                 .child(otherUserId);
     }
 

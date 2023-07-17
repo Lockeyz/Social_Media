@@ -76,16 +76,15 @@ public class CreatePostActivity extends AppCompatActivity {
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK){
-                            Intent data = result.getData();
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                        if (data!=null && data.getData()!=null){
                             imageUri = data.getData();
-                            image.setImageURI(imageUri);
-                        } else {
-                            Toast.makeText(CreatePostActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Glide.with(this).load(imageUri).into(image);
                         }
+                    } else {
+                        Toast.makeText(CreatePostActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -99,9 +98,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
         if (postModel.getPostId() != null){
             captionInput.setText(postModel.getCaption());
-//            if (addImageBtn.isActivated()==false){
             Glide.with(this).load(postModel.getPictureUrl()).into(image);
-
         }
 
     }

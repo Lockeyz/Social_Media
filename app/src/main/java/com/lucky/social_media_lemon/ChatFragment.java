@@ -40,13 +40,9 @@ public class ChatFragment extends Fragment {
 
     void setupRecyclerView(){
 
-        // Nếu sử dụng .orderBy() để sắp xếp theo trường Time cùng .where() thì trong
-        // .where() cũng cần có trường Time, còn không sẽ không lấy được query
-        // Sử dụng .notEqualTo() thì load ngay, .lessThanOrEqualTo thì phải tải lại lần nữa mới load
-        //
+        // Nhớ tạo composite index để sử dụng .orderBy() cùng .where()
         Query query = FirebaseUtil.allChatroomCollectionReference()
-                .where(Filter.and(Filter.arrayContains("userIds", FirebaseUtil.currentUserId()),
-                                Filter.notEqualTo("lastMessageTimestamp", Timestamp.now())))
+                .whereArrayContains("userIds", FirebaseUtil.currentUserId())
                 .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<ChatRoomModel> options = new FirestoreRecyclerOptions.Builder<ChatRoomModel>()

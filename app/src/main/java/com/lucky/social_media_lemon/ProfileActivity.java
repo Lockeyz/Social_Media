@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -26,6 +27,8 @@ import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
+
+import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -75,35 +78,20 @@ public class ProfileActivity extends AppCompatActivity {
         postLayout = findViewById(R.id.post_layout);
         recyclerView = findViewById(R.id.wall_recycler_view);
 
-        // Su dung .equals() thay vi "==" moi so sanh duoc 2 chuoi voi nhau
-        if (user.getUserId().equals(FirebaseUtil.currentUserId())){
-            wallName.setText("My Wall");
-            friendBtn.setClickable(false);
-            friendBtn.setText("Me");
-
-        } else {
-            wallName.setText(user.getUsername() + "'s Wall");
-            coverChangeBtn.setVisibility(View.INVISIBLE);
-            avatarChangeBtn.setVisibility(View.INVISIBLE);
-            friendBtn.setClickable(false);
-            postLayout.setVisibility(View.GONE);
-        }
-
-        backBtn.setOnClickListener(v -> {
-            onBackPressed();
-        });
-
         coverImagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK){
                         Intent data = result.getData();
                         if (data!=null && data.getData()!=null){
                             selectedCoverImageUri = data.getData();
-                            AndroidUtil.setCoverPic(this, selectedCoverImageUri, coverImage);
+                            coverImage.setImageURI(selectedCoverImageUri);
+                            FirebaseUtil.getOtherProfileCoverStorageRef(user.getUserId())
+                                    .putFile(selectedCoverImageUri);
                         }
                     }
                 }
         );
+
 
         avatarImagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -111,43 +99,64 @@ public class ProfileActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         if (data!=null && data.getData()!=null){
                             selectedAvatarImageUri = data.getData();
-                            AndroidUtil.setProfilePic(this, selectedAvatarImageUri, avatarImage);
+                            AndroidUtil.setProfilePic(getApplication(), selectedAvatarImageUri, avatarImage);
+                            FirebaseUtil.getOtherProfilePicStorageRef(user.getUserId())
+                                    .putFile(selectedAvatarImageUri);
                         }
                     }
                 }
         );
 
-
-        FirebaseUtil.getOtherProfilePicStorageRef(user.getUserId()).getDownloadUrl()
-                .addOnCompleteListener(t -> {
-                    if (t.isSuccessful()){
-                        Uri uri = t.getResult();
-                        AndroidUtil.setProfilePic(this, uri, avatarImage);
-                        AndroidUtil.setProfilePic(this, uri, postImage);
-                    }
-                });
+        // Sử dụng ImagePicker khi thiết lập RecyclerView bị lỗi
+//        coverChangeBtn.setOnClickListener(v -> {
+//            ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
+//                    .createIntent(new Function1<Intent, Unit>() {
+//                        @Override
+//                        public Unit invoke(Intent intent) {
+//                            coverImagePickLauncher.launch(intent);
+//                            return null;
+//                        }
+//                    });
+//
+//            });
 
         coverChangeBtn.setOnClickListener(v -> {
-            ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
-                    .createIntent(new Function1<Intent, Unit>() {
-                        @Override
-                        public Unit invoke(Intent intent) {
-                            coverImagePickLauncher.launch(intent);
-                            return null;
-                        }
-                    });
-            });
+            Intent photoPicker = new Intent();
+            photoPicker.setAction(Intent.ACTION_GET_CONTENT);
+            photoPicker.setType("image/*");
+            coverImagePickLauncher.launch(photoPicker);
+        });
+
+//        avatarChangeBtn.setOnClickListener(v -> {
+//            ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
+//                    .createIntent(new Function1<Intent, Unit>() {
+//                        @Override
+//                        public Unit invoke(Intent intent) {
+//                            avatarImagePickLauncher.launch(intent);
+//                            return null;
+//                        }
+//                    });
+//        });
 
         avatarChangeBtn.setOnClickListener(v -> {
-            ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
-                    .createIntent(new Function1<Intent, Unit>() {
-                        @Override
-                        public Unit invoke(Intent intent) {
-                            avatarImagePickLauncher.launch(intent);
-                            return null;
-                        }
-                    });
+            Intent photoPicker = new Intent();
+            photoPicker.setAction(Intent.ACTION_GET_CONTENT);
+            photoPicker.setType("image/*");
+            avatarImagePickLauncher.launch(photoPicker);
         });
+
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        profileName.setOnClickListener(v -> {
+            user = AndroidUtil.getUserModelFromIntent(getIntent());
+            Toast.makeText(this, user.getUserId(), Toast.LENGTH_SHORT).show();
+        });
+
+
+        setupImage();
+        setupFriendBtn();
 
         profileName.setText(user.getUsername());
 
@@ -170,18 +179,89 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    private void setupImage() {
+        FirebaseUtil.getOtherProfilePicStorageRef(user.getUserId()).getDownloadUrl()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Uri uri = task.getResult();
+                        AndroidUtil.setProfilePic(getApplication(), uri, avatarImage);
+                        AndroidUtil.setProfilePic(getApplication(), uri, postImage);
+                    }
+                });
+
+        FirebaseUtil.getOtherProfileCoverStorageRef(user.getUserId()).getDownloadUrl()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Uri uri = task.getResult();
+                        AndroidUtil.setCoverPic(getApplication(), uri, coverImage);
+                    }
+                });
+    }
+
+    private void setupFriendBtn() {
+
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+           if (task.isSuccessful()){
+               UserModel userModel = task.getResult().toObject(UserModel.class);
+               List<String> friendIds = userModel.getFriendIds();
+
+               // Su dung .equals() thay vi "==" moi so sanh duoc 2 chuoi voi nhau
+               if (user.getUserId().equals(FirebaseUtil.currentUserId())){
+                   wallName.setText("My Wall");
+                   friendBtn.setClickable(false);
+                   friendBtn.setText("Me");
+               }
+
+               else if (isFriend(friendIds)==true) {
+
+                   wallName.setText(user.getUsername() + "'s Wall");
+                   coverChangeBtn.setVisibility(View.INVISIBLE);
+                   avatarChangeBtn.setVisibility(View.INVISIBLE);
+                   friendBtn.setClickable(false);
+                   postLayout.setVisibility(View.GONE);
+               }
+               else if (isFriend(friendIds)==false) {
+
+                    wallName.setText(user.getUsername() + "'s Wall");
+                    coverChangeBtn.setVisibility(View.INVISIBLE);
+                    avatarChangeBtn.setVisibility(View.INVISIBLE);
+                    friendBtn.setText("Add friend");
+                    friendBtn.setClickable(true);
+                    postLayout.setVisibility(View.GONE);
+                }
+           }
+        });
+
+    }
+
+    private boolean isFriend(List<String> friendIds) {
+
+        for (String id : friendIds) {
+            if (id.contains(user.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void setupRecyclerView() {
-        Query query = FirebaseUtil.allPostCollectionReference()
-                .whereEqualTo("postUserId", user.getUserId());
 
-        FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
-                .setQuery(query, PostModel.class).build();
+            AndroidUtil.showToast(this, "setup RecyclerView");
 
-        adapter = new NewsFeedRecyclerAdapter(options, this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+            Query query = FirebaseUtil.allPostCollectionReference()
+                    .whereEqualTo("postUserId", user.getUserId())
+                    .orderBy("postTime", Query.Direction.DESCENDING);
+
+            FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
+                    .setQuery(query, PostModel.class).build();
+
+            adapter = new NewsFeedRecyclerAdapter(options, this);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+            adapter.startListening();
+
+
     }
 
     @Override

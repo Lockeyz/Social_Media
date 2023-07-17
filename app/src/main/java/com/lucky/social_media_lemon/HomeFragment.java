@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
                 });
 
         profilePic.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
             FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     UserModel currentUser = task.getResult().toObject(UserModel.class);
