@@ -86,7 +86,7 @@ public class CommentActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<CommentModel> options = new FirestoreRecyclerOptions.Builder<CommentModel>()
                 .setQuery(query, CommentModel.class).build();
 
-        adapter = new CommentRecyclerAdapter(options, CommentActivity.this);
+        adapter = new CommentRecyclerAdapter(options, CommentActivity.this, postId);
 
         layoutManager = new LinearLayoutManager(CommentActivity.this);
 

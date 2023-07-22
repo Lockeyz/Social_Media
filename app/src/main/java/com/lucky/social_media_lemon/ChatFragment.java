@@ -16,6 +16,7 @@ import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.RecentChatRecyclerAdapter;
 import com.lucky.social_media_lemon.model.ChatRoomModel;
+import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 
@@ -42,8 +43,7 @@ public class ChatFragment extends Fragment {
 
         // Nhớ tạo composite index để sử dụng .orderBy() cùng .where()
         Query query = FirebaseUtil.allChatroomCollectionReference()
-                .whereArrayContains("userIds", FirebaseUtil.currentUserId())
-                .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
+                .whereArrayContains("userIds", FirebaseUtil.currentUserId());
 
         FirestoreRecyclerOptions<ChatRoomModel> options = new FirestoreRecyclerOptions.Builder<ChatRoomModel>()
                 .setQuery(query, ChatRoomModel.class).build();

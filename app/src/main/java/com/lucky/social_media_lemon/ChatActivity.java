@@ -26,6 +26,7 @@ import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -39,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     TextView otherUserName;
     RecyclerView recyclerView;
     ImageView imageView;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUtil.getChatroomReference(chatroomId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 chatRoomModel = task.getResult().toObject(ChatRoomModel.class);
+
                 if (chatRoomModel==null){
                     // first time chat
                     chatRoomModel = new ChatRoomModel(

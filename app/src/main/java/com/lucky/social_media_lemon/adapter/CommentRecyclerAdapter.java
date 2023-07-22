@@ -25,10 +25,12 @@ import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 public class CommentRecyclerAdapter extends FirestoreRecyclerAdapter<CommentModel, CommentRecyclerAdapter.CommentRowViewHolder> {
     Context context;
+    String postId;
 
-    public CommentRecyclerAdapter(@NonNull FirestoreRecyclerOptions<CommentModel> options, Context context) {
+    public CommentRecyclerAdapter(@NonNull FirestoreRecyclerOptions<CommentModel> options, Context context, String postId) {
         super(options);
         this.context = context;
+        this.postId = postId;
     }
 
 

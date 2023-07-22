@@ -30,12 +30,16 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
     protected void onBindViewHolder(@NonNull ChatModelViewHolder holder, int position, @NonNull ChatMessageModel model) {
         if (model.getSenderId().equals(FirebaseUtil.currentUserId())){
             holder.leftChatLayout.setVisibility(View.GONE);
+            holder.leftChatTime.setVisibility(View.GONE);
             holder.rightChatLayout.setVisibility(View.VISIBLE);
             holder.rightChatTextView.setText(model.getMessage());
+            holder.rightChatTime.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getTimestamp()));
         } else {
             holder.rightChatLayout.setVisibility(View.GONE);
+            holder.rightChatTime.setVisibility(View.GONE);
             holder.leftChatLayout.setVisibility(View.VISIBLE);
             holder.leftChatTextView.setText(model.getMessage());
+            holder.leftChatTime.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getTimestamp()));
         }
     }
 
@@ -49,6 +53,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
 
         LinearLayout leftChatLayout, rightChatLayout;
         TextView leftChatTextView, rightChatTextView;
+        TextView leftChatTime, rightChatTime;
 
         public ChatModelViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,7 +62,8 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             rightChatLayout = itemView.findViewById(R.id.right_chat_layout);
             leftChatTextView = itemView.findViewById(R.id.left_chat_textview);
             rightChatTextView = itemView.findViewById(R.id.right_chat_textview);
-
+            leftChatTime = itemView.findViewById(R.id.left_time_text_view);
+            rightChatTime = itemView.findViewById(R.id.right_time_text_view);
         }
     }
 }

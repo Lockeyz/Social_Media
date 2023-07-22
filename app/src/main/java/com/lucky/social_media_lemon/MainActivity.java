@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     ProfileFragment profileFragment;
     FriendFragment friendFragment;
     ChatFragment chatFragment;
+    NotificationFragment notificationFragment;
 
 
     @Override
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         friendFragment = new FriendFragment();
         profileFragment = new ProfileFragment();
         chatFragment = new ChatFragment();
+        notificationFragment = new NotificationFragment();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         searchButton = findViewById(R.id.main_search_btn);
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (item.getItemId() == R.id.menu_friend) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, friendFragment).commit();
+                }
+                if (item.getItemId() == R.id.menu_notification) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, notificationFragment).commit();
                 }
                 if (item.getItemId() == R.id.menu_chat) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, chatFragment).commit();
