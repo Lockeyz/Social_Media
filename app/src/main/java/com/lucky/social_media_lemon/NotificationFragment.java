@@ -46,23 +46,23 @@ LinearLayoutManager linearLayoutManager;
     }
 
     void setupRecyclerView(){
-//        List<String> friendIds = FirebaseUtil.currentUserDetails().get().getResult().toObject(UserModel.class).getFriendIds();
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 List<String> friendIds = task.getResult().toObject(UserModel.class).getFriendIds();
 
-                Query query = FirebaseUtil.allNotificationCollectionReference()
-                        .whereIn("notificationUserId", friendIds);
-                FirestoreRecyclerOptions<NotificationModel> options = new FirestoreRecyclerOptions.Builder<NotificationModel>()
-                        .setQuery(query, NotificationModel.class).build();
+                if (!friendIds.isEmpty()){
+                    Query query = FirebaseUtil.allNotificationCollectionReference()
+                            .whereIn("notificationUserId", friendIds);
+                    FirestoreRecyclerOptions<NotificationModel> options = new FirestoreRecyclerOptions.Builder<NotificationModel>()
+                            .setQuery(query, NotificationModel.class).build();
 
-                adapter = new NotificationAdapter(options, getContext());
+                    adapter = new NotificationAdapter(options, getContext());
 
-                linearLayoutManager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setAdapter(adapter);
-                adapter.startListening();
-
+                    linearLayoutManager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAdapter(adapter);
+                    adapter.startListening();
+                }
             }
         });
 
