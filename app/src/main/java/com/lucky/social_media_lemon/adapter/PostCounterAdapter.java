@@ -34,22 +34,23 @@ public class PostCounterAdapter extends FirestoreRecyclerAdapter<UserModel, Post
 
     @Override
     protected void onBindViewHolder(@NonNull PostCounterViewHolder holder, int position, @NonNull UserModel model) {
-//        FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
-//                .addOnCompleteListener(t -> {
-//                    if (t.isSuccessful()){
-//                        Uri uri = t.getResult();
-//                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
-//                    }
-//                });
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
+                    }
+                });
+
         holder.userName.setText(model.getUsername());
-        FirebaseUtil.allPostCollectionReference().count().get(AggregateSource.SERVER).addOnCompleteListener(task -> {
+        FirebaseUtil.allPostCollectionReference().whereEqualTo("postUserId", model.getUserId()).count().get(AggregateSource.SERVER).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 AggregateQuerySnapshot snapshot = task.getResult();
                 holder.postCounter.setText(String.valueOf(snapshot.getCount()));
             }
         });
 
-        holder.postCounter.setText("3");
+        super.startListening();
 
 
     }
@@ -61,6 +62,7 @@ public class PostCounterAdapter extends FirestoreRecyclerAdapter<UserModel, Post
         return new PostCounterViewHolder(view);
     }
 
+
     class PostCounterViewHolder extends RecyclerView.ViewHolder{
         ImageView profilePic;
         TextView userName;
@@ -68,7 +70,7 @@ public class PostCounterAdapter extends FirestoreRecyclerAdapter<UserModel, Post
 
         public PostCounterViewHolder(@NonNull View itemView) {
             super(itemView);
-            profilePic = itemView.findViewById(R.id.avatar);
+            profilePic = itemView.findViewById(R.id.profile_pic_image_view);
             userName = itemView.findViewById(R.id.username_text_view);
             postCounter = itemView.findViewById(R.id.post_counter);
         }

@@ -5,19 +5,19 @@ import com.google.firebase.Timestamp;
 public class NotificationModel {
     private String notificationId;
     private Timestamp notificationTime;
-    private String notificationSenderId;
+    private String notificationUserId;
     private String notificationContent;
-    private boolean isFriend;
+
     public NotificationModel() {
     }
 
     public NotificationModel(String notificationId, Timestamp notificationTime,
-                             String notificationSenderId, String notificationContent, boolean isFriend) {
+                             String notificationUserId, String notificationContent) {
         this.notificationId = notificationId;
         this.notificationTime = notificationTime;
-        this.notificationSenderId = notificationSenderId;
+        this.notificationUserId = notificationUserId;
         this.notificationContent = notificationContent;
-        this.isFriend = isFriend;
+
     }
 
     public String getNotificationId() {
@@ -36,12 +36,12 @@ public class NotificationModel {
         this.notificationTime = notificationTime;
     }
 
-    public String getNotificationSenderId() {
-        return notificationSenderId;
+    public String getNotificationUserId() {
+        return notificationUserId;
     }
 
-    public void setNotificationSenderId(String notificationSenderId) {
-        this.notificationSenderId = notificationSenderId;
+    public void setNotificationUserId(String notificationUserId) {
+        this.notificationUserId = notificationUserId;
     }
 
     public String getNotificationContent() {
@@ -52,11 +52,4 @@ public class NotificationModel {
         this.notificationContent = notificationContent;
     }
 
-    public boolean getIsFriend() {
-        return isFriend;
-    }
-
-    public void setIsFriend(boolean isFriend) {
-        this.isFriend = isFriend;
-    }
 }

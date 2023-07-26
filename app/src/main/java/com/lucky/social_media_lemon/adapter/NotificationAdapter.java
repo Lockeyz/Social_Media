@@ -1,6 +1,8 @@
 package com.lucky.social_media_lemon.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.lucky.social_media_lemon.PostActivity;
 import com.lucky.social_media_lemon.R;
 import com.lucky.social_media_lemon.model.NotificationModel;
+import com.lucky.social_media_lemon.model.UserModel;
+import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationModel, NotificationAdapter.NotificationModelViewHolder> {
@@ -28,35 +33,55 @@ public class NotificationAdapter extends FirestoreRecyclerAdapter<NotificationMo
 
     @Override
     protected void onBindViewHolder(@NonNull NotificationModelViewHolder holder, int position, @NonNull NotificationModel model) {
-        FirebaseUtil.getNotificationReference(model.getNotificationId()).get().addOnCompleteListener(task -> {
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getNotificationUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()){
+                        Uri uri = t.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.notificationPic);
+                    }
+                });
+        FirebaseUtil.getUserDetailsById(model.getNotificationUserId()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
-                NotificationModel notificationModel = task.getResult().toObject(NotificationModel.class);
-
+                UserModel userModel = task.getResult().toObject(UserModel.class);
+                holder.usernameText.setText(userModel.getUsername());
             }
         });
+
+        holder.contentText.setText(model.getNotificationContent());
+        holder.timeText.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getNotificationTime()));
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PostActivity.class);
+            AndroidUtil.passNotificationModelAsIntent(intent, model);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
+
     }
 
     @NonNull
     @Override
     public NotificationModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.request_recycler_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.notification_recycler_row, parent, false);
         return new NotificationModelViewHolder(view);
     }
 
     class NotificationModelViewHolder extends RecyclerView.ViewHolder{
 
         ImageView notificationPic;
+        TextView usernameText;
         TextView contentText;
-        Button confirmButton;
-        Button deleteRequestButton;
+        TextView timeText;
+
 
         public NotificationModelViewHolder(@NonNull View itemView) {
             super(itemView);
 
-//            notificationPic = itemView.findViewById(R.id.profile_pic_image_view);
-//            contentText = itemView.findViewById(R.id.notification_content_text);
-//            confirmButton = itemView.findViewById(R.id.confirm_btn);
-//            deleteRequestButton = itemView.findViewById(R.id.delete_request_btn);
+            notificationPic = itemView.findViewById(R.id.profile_pic_image_view);
+            usernameText = itemView.findViewById(R.id.username_text_view);
+            contentText = itemView.findViewById(R.id.notification_content_text_view);
+            timeText = itemView.findViewById(R.id.notification_time_text_view);
+
         }
     }
 }

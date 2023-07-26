@@ -5,34 +5,35 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.lucky.social_media_lemon.adapter.NewsFeedPagingAdapter;
 import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
 import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -42,6 +43,13 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     NewsFeedRecyclerAdapter adapter;
     LinearLayoutManager layoutManager;
+//    NewsFeedPagingAdapter adapter;
+    List<PostModel> list;
+    private DocumentSnapshot lastVisible;
+    private boolean isScrolling = false;
+    private boolean isLastItemReached = false;
+    private int limit = 5;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -99,42 +107,104 @@ public class HomeFragment extends Fragment {
                 userIds.add(FirebaseUtil.currentUserId());
 
                 Query query;
-
                 if (currentUser.getFriendIds().isEmpty()){
                     query = FirebaseUtil.allPostCollectionReference()
                             .whereEqualTo("postUserId", FirebaseUtil.currentUserId())
-                            .limit(20);
+                            .orderBy("postTime", Query.Direction.DESCENDING)
+                            .limit(50);
                 } else {
                     // Cần tạo Composite index trên Firebase mới có thể sử dụng .orderBy cùng .where()
                     query = FirebaseUtil.allPostCollectionReference()
                             .whereIn("postUserId", userIds)
                             .orderBy("postTime", Query.Direction.DESCENDING)
-                            .limit(20);
+                            .limit(50);
                 }
-
                 FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
                         .setQuery(query, PostModel.class).build();
-
+//                list = new ArrayList<>();
                 adapter = new NewsFeedRecyclerAdapter(options, getContext());
-
                 layoutManager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
 
-                layoutManager.onRestoreInstanceState(layoutManager.onSaveInstanceState());
+//                adapter.notifyDataSetChanged();
                 adapter.startListening();
+
+                //Phân trang nhưng không sử dụng được real-time
+//                setupPagination(query, userIds);
             }
         });
 
-
-
     }
+
+    // Phân trang phải sử dụng với RecyclerViewAdapter thường
+    void setupPagination(Query query, List<String> userIds){
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    PostModel productModel = document.toObject(PostModel.class);
+                    list.add(productModel);
+                }
+
+                adapter.notifyDataSetChanged();
+
+                lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                AndroidUtil.showToast(getContext(), "First page");
+                RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                            isScrolling = true;
+                        }
+                    }
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+
+                        LinearLayoutManager linearLayoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+                        int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                        int visibleItemCount = linearLayoutManager.getChildCount();
+                        int totalItemCount = linearLayoutManager.getItemCount();
+
+                        if (isScrolling && (firstVisibleItemPosition + visibleItemCount == totalItemCount)) {
+                            isScrolling = false;
+
+                            Query nextQuery = FirebaseUtil.allPostCollectionReference()
+                                    .whereIn("postUserId", userIds)
+                                    .orderBy("postTime", Query.Direction.DESCENDING)
+                                    .startAfter(lastVisible)
+                                    .limit(limit);
+
+                            nextQuery.get().addOnCompleteListener(t -> {
+                                if (t.isSuccessful()) {
+                                    for (DocumentSnapshot d : t.getResult()) {
+                                        PostModel productModel = d.toObject(PostModel.class);
+                                        list.add(productModel);
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+
+                                    if (t.getResult().size()!=0){
+                                        lastVisible = t.getResult().getDocuments().get(t.getResult().size() - 1);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                };
+                recyclerView.addOnScrollListener(onScrollListener);
+            }
+        });
+    }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        if (adapter!=null)
+        if (adapter!=null) {
             adapter.startListening();
+        }
     }
 
     public void onDestroy() {

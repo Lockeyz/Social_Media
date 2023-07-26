@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class RequestModel {
     private String requestId;
-//    private String receiverId;
+//    private String receiveId;
     private Timestamp requestTime;
     private boolean isRequestUser;
 

@@ -29,6 +29,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.lucky.social_media_lemon.model.NotificationModel;
 import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
@@ -46,7 +47,6 @@ public class CreatePostActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Uri imageUri;
     PostModel postModel;
-//    final  private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Images");
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference("ImagesStore");
 
     @Override
@@ -110,14 +110,16 @@ public class CreatePostActivity extends AppCompatActivity {
         Timestamp postTime = Timestamp.now();
         List<String> likedUserIds = new ArrayList<>();
 
-//        PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
-//                likedUserIds);
-//        FirebaseUtil.getPostReference(postId).set(postModel);
+
         if (postModel.getPostId()==null) {
 
             PostModel postModel = new PostModel(postId, postUserId, postTime, caption, pictureUrl,
                     likedUserIds);
             FirebaseUtil.getPostReference(postId).set(postModel);
+
+            NotificationModel notificationModel = new NotificationModel(postId, postTime,
+                    postUserId,"created a new post.");
+            FirebaseUtil.getNotificationReference(postId).set(notificationModel);
 
         } else { // Update post duoc edit
             if (pictureUrl!=null){
@@ -179,11 +181,4 @@ public class CreatePostActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
     }
 
-//    void setPostWithImage(boolean withImage){
-//        if (withImage){
-//            image.setVisibility(View.VISIBLE);
-//        } else {
-//            image.setVisibility(View.INVISIBLE);
-//        }
-//    }
 }

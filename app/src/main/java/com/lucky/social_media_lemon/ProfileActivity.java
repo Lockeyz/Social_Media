@@ -108,6 +108,8 @@ public class ProfileActivity extends AppCompatActivity {
         );
 
         // Sử dụng ImagePicker khi thiết lập RecyclerView bị lỗi
+        //
+
 //        coverChangeBtn.setOnClickListener(v -> {
 //            ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
 //                    .createIntent(new Function1<Intent, Unit>() {
@@ -245,8 +247,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-
-            AndroidUtil.showToast(this, "setup RecyclerView");
 
             Query query = FirebaseUtil.allPostCollectionReference()
                     .whereEqualTo("postUserId", user.getUserId())

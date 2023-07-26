@@ -1,13 +1,11 @@
 package com.lucky.social_media_lemon.adapter;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,29 +14,23 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreArray;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firestore.v1.Target;
 import com.lucky.social_media_lemon.CommentActivity;
 import com.lucky.social_media_lemon.CreatePostActivity;
-import com.lucky.social_media_lemon.MainActivity;
 import com.lucky.social_media_lemon.ProfileActivity;
 import com.lucky.social_media_lemon.R;
-import com.lucky.social_media_lemon.SearchUserActivity;
 import com.lucky.social_media_lemon.constants.Constants;
 import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
@@ -47,26 +39,26 @@ import com.lucky.social_media_lemon.utils.FirebaseUtil;
 
 import java.util.List;
 
-public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel, NewsFeedRecyclerAdapter.PostModelViewHolder> {
+public class NewsFeedPagingAdapter extends RecyclerView.Adapter<NewsFeedPagingAdapter.PostModelViewHolder> {
 
     Context context;
     List<PostModel> postList;
 
-    public NewsFeedRecyclerAdapter(@NonNull FirestoreRecyclerOptions<PostModel> options, Context context) {
-        super(options);
-        this.context = context;
-    }
-
-    public NewsFeedRecyclerAdapter(@NonNull FirestoreRecyclerOptions<PostModel> options, Context context, List<PostModel> postList) {
-        super(options);
+    public NewsFeedPagingAdapter(Context context, List<PostModel> postList){
         this.context = context;
         this.postList = postList;
     }
 
+    @NonNull
+    @Override
+    public PostModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.news_feed_recycler_row, parent, false);
+        return new PostModelViewHolder(view);
+    }
 
     @Override
-    protected void onBindViewHolder(@NonNull PostModelViewHolder holder, int position, @NonNull PostModel model) {
-
+    public void onBindViewHolder(@NonNull PostModelViewHolder holder, int position) {
+        PostModel model = postList.get(position);
         FirebaseUtil.getOtherProfilePicStorageRef(model.getPostUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful()){
@@ -93,6 +85,14 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             holder.postOwnerUsernameText.setText(postOwner.getUsername());
         });
 
+        FirebaseUtil.postCommentsCollectionReference(model.getPostId()).count().get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
+                AggregateQuerySnapshot snapshot = task.getResult();
+                holder.commentCounterText.setText(String.valueOf(snapshot.getCount()));
+            }
+        });
+
         holder.captionText.setText(model.getCaption());
         Glide.with(context).load(model.getPictureUrl()).into(holder.postPicImage);
         holder.postedTimeText.setText(FirebaseUtil.timestampToFullDateAndHourString(model.getPostTime()));
@@ -106,14 +106,6 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             holder.likeIconBtn.setImageResource(R.drawable.like_icon);
             holder.likeText.setTextColor(context.getResources().getColor(R.color.grey_text));
         }
-
-        FirebaseUtil.postCommentsCollectionReference(model.getPostId()).count().get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
-                AggregateQuerySnapshot snapshot = task.getResult();
-                holder.commentCounterText.setText(String.valueOf(snapshot.getCount()));
-            }
-        });
 
         if (!model.getPostUserId().contains(FirebaseUtil.currentUserId())){
             holder.moreBtn.setVisibility(View.INVISIBLE);
@@ -143,15 +135,14 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             deletePostLayout.setOnClickListener(v1 -> {
 
                 FirebaseUtil.getPostReference(model.getPostId()).delete();
-                FirebaseUtil.getNotificationReference(model.getPostId()).delete();
                 dialog.dismiss();
                 AndroidUtil.showToast(context, "Delete post successfully");
 
             });
 
-             cancelBtn.setOnClickListener(v1 -> {
-                 dialog.dismiss();
-             });
+            cancelBtn.setOnClickListener(v1 -> {
+                dialog.dismiss();
+            });
 
             dialog.show();
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -186,18 +177,13 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             commentIntent.putExtra(Constants.EXTRA_POST_ID_NEWS_FEED_RECYCLER_ADAPTER_TO_COMMENT_ACTIVITY, model.getPostId());
             context.startActivity(commentIntent);
         });
-
-
     }
 
-    @NonNull
+
     @Override
-    public PostModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.news_feed_recycler_row, parent, false);
-        return new PostModelViewHolder(view);
+    public int getItemCount() {
+        return postList.size();
     }
-
-
 
     class PostModelViewHolder extends RecyclerView.ViewHolder {
 
@@ -215,11 +201,6 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
         ImageButton moreBtn;
         TextView likeText;
 
-        RelativeLayout shareLayout;
-        ImageView sharePicImage;
-        TextView shareTime;
-        ImageButton shareMoreBtn;
-
         public PostModelViewHolder(@NonNull View itemView) {
             super(itemView);
             captionText = itemView.findViewById(R.id.caption_text_view);
@@ -236,10 +217,8 @@ public class NewsFeedRecyclerAdapter extends FirestoreRecyclerAdapter<PostModel,
             moreBtn = itemView.findViewById(R.id.more_btn);
             postedTimeText = itemView.findViewById(R.id.tv_posted_time);
 
-//            shareLayout = itemView.findViewById(R.id.share_layout);
-//            sharePicImage = itemView.findViewById(R.id.share_avatar_image_view);
-//            shareTime = itemView.findViewById(R.id.share_time_text_view);
-//            shareMoreBtn = itemView.findViewById(R.id.share_more_btn);
         }
+
+
     }
 }

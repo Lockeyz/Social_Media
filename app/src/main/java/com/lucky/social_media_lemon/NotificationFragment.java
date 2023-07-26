@@ -13,17 +13,23 @@ import android.view.ViewGroup;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 import com.lucky.social_media_lemon.adapter.NewsFeedRecyclerAdapter;
+import com.lucky.social_media_lemon.adapter.NotificationAdapter;
 import com.lucky.social_media_lemon.adapter.PostCounterAdapter;
+import com.lucky.social_media_lemon.model.NotificationModel;
 import com.lucky.social_media_lemon.model.PostModel;
 import com.lucky.social_media_lemon.model.UserModel;
+import com.lucky.social_media_lemon.utils.AndroidUtil;
 import com.lucky.social_media_lemon.utils.FirebaseUtil;
+
+import java.util.List;
 
 
 public class NotificationFragment extends Fragment {
 
 RecyclerView recyclerView;
-PostCounterAdapter adapter;
+NotificationAdapter adapter;
 LinearLayoutManager linearLayoutManager;
+
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -40,16 +46,27 @@ LinearLayoutManager linearLayoutManager;
     }
 
     void setupRecyclerView(){
-        Query query = FirebaseUtil.allFriendCollectionReference();
-        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
-                .setQuery(query, UserModel.class).build();
+//        List<String> friendIds = FirebaseUtil.currentUserDetails().get().getResult().toObject(UserModel.class).getFriendIds();
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                List<String> friendIds = task.getResult().toObject(UserModel.class).getFriendIds();
 
-        adapter = new PostCounterAdapter(options, getActivity());
+                Query query = FirebaseUtil.allNotificationCollectionReference()
+                        .whereIn("notificationUserId", friendIds);
+                FirestoreRecyclerOptions<NotificationModel> options = new FirestoreRecyclerOptions.Builder<NotificationModel>()
+                        .setQuery(query, NotificationModel.class).build();
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+                adapter = new NotificationAdapter(options, getContext());
+
+                linearLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setAdapter(adapter);
+                adapter.startListening();
+
+            }
+        });
+
+
     }
     @Override
     public void onStart() {
